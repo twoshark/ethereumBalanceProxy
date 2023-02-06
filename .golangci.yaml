@@ -1,0 +1,60 @@
+run:
+  tests: true
+  modules-download-mode: vendor
+  skip-dirs-use-default: true
+# Linter Docs: https://golangci-lint.run/usage/linters/
+linters:
+  enable:
+    - deadcode
+    - errcheck
+    - goconst
+    - gofumpt
+    - dupl
+    - revive
+    - gosimple
+    - govet
+    - ineffassign
+    - nakedret
+    - staticcheck
+    - structcheck
+    - typecheck
+    - unused
+    - varcheck
+    - whitespace
+    - errorlint
+    - funlen
+    - gocognit
+    - gocritic
+    - ifshort
+    - misspell
+    - prealloc
+    - unconvert
+    - unparam
+    - wastedassign
+    - gosec
+issues:
+  exclude-rules:
+    - path: src/docs/*
+      linters:
+        - deadcode
+        - unused
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  funlen:
+    lines: 40
+  govet:
+    check-shadowing: true
+  gci:
+    local-prefixes: github.com/twoshark/alluvial1-1
+  gocritic:
+    enabled-checks:
+      - nestingReduce
+      - unnamedResult
+      - ruleguard
+      - truncateCmp
+  gomnd:
+    settings:
+      mnd:
+        ignored-files: config_env.go
