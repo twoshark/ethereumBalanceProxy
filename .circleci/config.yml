@@ -1,0 +1,60 @@
+version: 2.1
+orbs:
+  docker: circleci/docker@1.7.0
+executors:
+  docker-publisher:
+    docker:
+      - image: circleci/buildpack-deps:latest-alpine
+jobs:
+  build:
+    docker:
+      - image: cimg/go:1.20
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: sudo apt update -y && sudo apt install -y libpcap-dev
+      - run:
+          name: Build go project
+          command: make build
+
+  test:
+    docker:
+      - image: cimg/go:1.20
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: sudo apt update -y && sudo apt install -y libpcap-dev
+      - run:
+          name: Build go project
+          command: make test
+
+  lint:
+    docker:
+      - image: golangci/golangci-lint:v1.51
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: apt update -y && apt install -y libpcap-dev
+      - run:
+          name: go mod vendor
+          command: go mod vendor
+      - run:
+          name: Lint
+          command: make lint
+
+workflows:
+  version: 2
+  balanceProxy:
+    jobs:
+      - lint
+      - test
+      - build
