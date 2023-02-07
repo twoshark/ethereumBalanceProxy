@@ -1,3 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env bash
+set -eo pipefail
 
-echo "No Mocks Implemented Yet"
+echo "Remove Old Mocks ..."
+rm -rf mocks 2>> /dev/null
+echo "Mocking interfaces ..."
+mockgen -source upstream/ethereum/client.go -destination mocks/mockClient.go

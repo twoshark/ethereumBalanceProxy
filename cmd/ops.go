@@ -15,7 +15,6 @@ var opsCmd = &cobra.Command{
 	},
 }
 
-// nolint: gochecknoinits
 func init() {
 	rootCmd.AddCommand(opsCmd)
 }

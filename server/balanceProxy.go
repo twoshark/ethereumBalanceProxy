@@ -1,11 +1,17 @@
 package server
 
 import (
-	"github.com/twoshark/alluvial1-1/common"
-	"github.com/twoshark/alluvial1-1/upstream"
+	"math/big"
 	"net/http"
+	"strconv"
+	"time"
 
+	log "github.com/sirupsen/logrus"
+
+	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/labstack/echo/v4"
+	"github.com/twoshark/balanceproxy/common"
+	"github.com/twoshark/balanceproxy/upstream"
 )
 
 // BalanceProxy contains the handlers for the server.
@@ -14,11 +20,91 @@ type BalanceProxy struct {
 }
 
 func NewBalanceProxy(config common.AppConfiguration) *BalanceProxy {
-	return &BalanceProxy{
+	bp := &BalanceProxy{
 		UpstreamManager: upstream.NewManager(config.Endpoints),
+	}
+	return bp
+}
+
+func (bp *BalanceProxy) InitClients(config common.AppConfiguration) {
+	bp.UpstreamManager.LoadClients(config.Endpoints)
+	var err error
+	for {
+		err = bp.UpstreamManager.ConnectAll()
+		if err != nil {
+			log.Error(err)
+			time.Sleep(10 * time.Second)
+			continue
+		}
+		return
 	}
 }
 
-func (bp BalanceProxy) RootHandler(c echo.Context) error {
+func (bp *BalanceProxy) RootHandler(c echo.Context) error {
 	return c.String(http.StatusOK, "server root")
+}
+
+func (bp *BalanceProxy) GetLatestBalance(c echo.Context) error {
+	walletAddress := c.Param("account")
+	address := ethcommon.HexToAddress(walletAddress)
+	balance, err := bp.GetBalanceFromNode(c, address, nil)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(200, balance)
+}
+
+func (bp *BalanceProxy) GetBalance(c echo.Context) error {
+	walletAddress := c.Param("account")
+	address := ethcommon.HexToAddress(walletAddress)
+
+	blockParam := c.Param("block")
+	block, err := ParseBlockParam(blockParam)
+	if err != nil {
+		return err
+	}
+
+	balance, err := bp.GetBalanceFromNode(c, address, block)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(200, balance)
+}
+
+func (bp *BalanceProxy) GetBalanceFromNode(c echo.Context, address ethcommon.Address, block *big.Int) (map[string]interface{}, error) {
+	logger := log.WithFields(log.Fields{
+		"block":   block,
+		"address": address,
+	})
+
+	client, err := bp.UpstreamManager.GetClient()
+	if err != nil {
+		logger.Error("Error getting upstream client:", err)
+		return nil, err
+	}
+
+	balance, err := client.BalanceAt(c.Request().Context(), address, block)
+	if err != nil {
+		logger.Error("Balance RPC Error:", err)
+		return nil, err
+	}
+
+	return map[string]interface{}{"balance": balance.String()}, nil
+}
+
+func ParseBlockParam(blockParam string) (*big.Int, error) {
+	var block *big.Int
+	if blockParam == "" {
+		// if the user does not specify, we return the latest block as per the example
+		block = nil
+	} else {
+		parsedBlock, err := strconv.ParseInt(blockParam, 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		block = big.NewInt(parsedBlock)
+	}
+	return block, nil
 }

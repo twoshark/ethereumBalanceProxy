@@ -1,6 +1,6 @@
 package main
 
-import "github.com/twoshark/alluvial1-1/cmd"
+import "github.com/twoshark/balanceproxy/cmd"
 
 func main() {
 	cmd.Execute()

@@ -4,7 +4,7 @@ orbs:
 executors:
   docker-publisher:
     docker:
-      - image: circleci/buildpack-deps:latest-alpine
+      - image: 	cimg/base:2023.02
 jobs:
   build:
     docker:

@@ -3,19 +3,29 @@ package server
 import (
 	"context"
 	"errors"
-	"github.com/twoshark/alluvial1-1/common"
 	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
+	"github.com/twoshark/balanceproxy/common"
 )
 
 func Start(config common.AppConfiguration) {
+	var wg sync.WaitGroup
+	wg.Add(1)
+
 	bp := NewBalanceProxy(config)
+	go func() {
+		defer wg.Done()
+		bp.InitClients(config)
+	}()
+	wg.Wait()
+
 	// Echo instance
 	e := echo.New()
 
@@ -25,14 +35,13 @@ func Start(config common.AppConfiguration) {
 
 	// Routes
 	e.GET("/", bp.RootHandler)
+	e.GET("/ethereum/balance/:account", bp.GetLatestBalance)
+	e.GET("/ethereum/balance/:account/block/:block", bp.GetBalance)
 
 	// Start server
-	go func() {
-		if err := e.Start(":" + config.ListenPort); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			e.Logger.Fatal("shutting down the server")
-		}
-	}()
-
+	if err := e.Start(":" + config.ListenPort); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		e.Logger.Fatal("shutting down the server")
+	}
 	// Graceful Shutdown
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)

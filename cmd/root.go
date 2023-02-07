@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/twoshark/alluvial1-1/common"
+	"github.com/twoshark/balanceproxy/common"
 )
 
 // rootCmd represents the base command when called without any subcommands.
@@ -22,7 +22,6 @@ func Execute() {
 	}
 }
 
-// nolint: gochecknoinits
 func init() {
 	cobra.OnInitialize(initConfig)
 }
