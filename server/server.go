@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	"github.com/twoshark/alluvial1-1/common"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,8 +14,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-func Start() {
-	bp := NewBalanceProxy()
+func Start(config common.AppConfiguration) {
+	bp := NewBalanceProxy(config)
 	// Echo instance
 	e := echo.New()
 
@@ -24,11 +25,10 @@ func Start() {
 
 	// Routes
 	e.GET("/", bp.RootHandler)
-	port := viper.GetString("PORT")
 
 	// Start server
 	go func() {
-		if err := e.Start(":" + port); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		if err := e.Start(":" + config.ListenPort); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			e.Logger.Fatal("shutting down the server")
 		}
 	}()
