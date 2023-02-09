@@ -21,6 +21,7 @@ var serverCmd = &cobra.Command{
 	},
 }
 
+// nolint: gochecknoinits
 func init() {
 	rootCmd.AddCommand(serverCmd)
 	endpointsFlag = serverCmd.PersistentFlags().String("endpoints", "http://localhost:8545", "A comma separated list of backend endpoints to proxy")

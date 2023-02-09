@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+
 	"sync"
 	"time"
 
@@ -42,6 +43,7 @@ func Start(config common.AppConfiguration) {
 	if err := e.Start(":" + config.ListenPort); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		e.Logger.Fatal("shutting down the server")
 	}
+
 	// Graceful Shutdown
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
