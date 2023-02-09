@@ -2,16 +2,17 @@ package server
 
 import (
 	"context"
+	"net/http"
+	"strconv"
+	"testing"
+	"time"
+
 	"github.com/ethereum/go-ethereum/ethclient"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"github.com/twoshark/balanceproxy/common"
-	"net/http"
-	"strconv"
-	"testing"
-	"time"
 )
 
 type ServerTestSuite struct {

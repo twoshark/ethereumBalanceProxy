@@ -58,7 +58,7 @@ func (c *Client) isBlockHeightIncreasing(startBlock uint64) error {
 	var block uint64
 	lastBlock := startBlock
 	var err error
-	//period := viper.GetInt64("HEALTH_BLOCK_HEIGHT_CHECK_PERIOD_MS")
+	// period := viper.GetInt64("HEALTH_BLOCK_HEIGHT_CHECK_PERIOD_MS")
 
 	for i := 0; i < increaseObservationWindow; i++ {
 		block, err = c.EthClient().BlockNumber(context.Background())
