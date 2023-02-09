@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/spf13/viper"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -30,19 +31,7 @@ func (c *Client) HealthCheck() error {
 		return errUpstreamSyncing
 	}
 
-	// Verify that the json rpc api responds to a request for block height
-	lastBlock, err := c.BlockNumber(context.Background())
-	if err != nil {
-		return err
-	}
-
-	// Verify that block height is > 0
-	if lastBlock == 0 {
-		return errBlockHeightZero
-	}
-
-	err = c.isBlockHeightIncreasing(lastBlock)
-	if err != nil {
+	if err = c.isBlockHeightIncreasing(); err != nil {
 		return err
 	}
 
@@ -50,33 +39,40 @@ func (c *Client) HealthCheck() error {
 	return nil
 }
 
-func (c *Client) isBlockHeightIncreasing(startBlock uint64) error {
+func (c *Client) isBlockHeightIncreasing() error {
+	// Verify that the json rpc api responds to a request for block height
+	lastBlock, err := c.BlockNumber(context.Background())
+	if err != nil {
+		return err
+	}
+	// Verify that block height is > 0
+	if lastBlock == 0 {
+		return errBlockHeightZero
+	}
 	// Verify that block height is climbing at a reasonable pace
-	blockHeightIncreased := 0
 	increaseObservationWindow := 3
-
 	var block uint64
-	lastBlock := startBlock
-	var err error
-	// period := viper.GetInt64("HEALTH_BLOCK_HEIGHT_CHECK_PERIOD_MS")
+	period := viper.GetInt("HEALTH_BLOCK_HEIGHT_CHECK_PERIOD_MS")
+	ticker := time.NewTicker(time.Duration(period) * time.Millisecond)
+	count := 0
+	for {
+		select {
+		case <-ticker.C:
+			block, err = c.EthClient().BlockNumber(context.Background())
+			if err != nil {
+				return err
+			}
+			if block > lastBlock {
+				return nil
+			} else if block < lastBlock {
+				return errUpstreamRewind
+			}
+			lastBlock = block
 
-	for i := 0; i < increaseObservationWindow; i++ {
-		block, err = c.EthClient().BlockNumber(context.Background())
-		if err != nil {
-			return err
+			count++
+			if count >= increaseObservationWindow {
+				return errBlockHeightIncreaseTooSlow
+			}
 		}
-		log.Print(block, ":", lastBlock)
-		if block > lastBlock {
-			return nil
-		} else if block < lastBlock {
-			return errUpstreamRewind
-		}
-		lastBlock = block
-		time.Sleep(12 * time.Second) // Eth Avg Block Time is 12.06s
 	}
-
-	if blockHeightIncreased <= 1 {
-		return errBlockHeightIncreaseTooSlow
-	}
-	return nil
 }
