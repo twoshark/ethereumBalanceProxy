@@ -55,24 +55,21 @@ func (c *Client) isBlockHeightIncreasing() error {
 	period := viper.GetInt("HEALTH_BLOCK_HEIGHT_CHECK_PERIOD_MS")
 	ticker := time.NewTicker(time.Duration(period) * time.Millisecond)
 	count := 0
-	for {
-		select {
-		case <-ticker.C:
-			block, err = c.EthClient().BlockNumber(context.Background())
-			if err != nil {
-				return err
-			}
-			if block > lastBlock {
-				return nil
-			} else if block < lastBlock {
-				return errUpstreamRewind
-			}
-			lastBlock = block
+	for ; true; <-ticker.C {
+		block, err = c.EthClient().BlockNumber(context.Background())
+		if err != nil {
+			return err
+		}
+		if block > lastBlock {
+			return nil
+		} else if block < lastBlock {
+			return errUpstreamRewind
+		}
+		lastBlock = block
 
-			count++
-			if count >= increaseObservationWindow {
-				return errBlockHeightIncreaseTooSlow
-			}
+		count++
+		if count >= increaseObservationWindow {
+			return errBlockHeightIncreaseTooSlow
 		}
 	}
 }
