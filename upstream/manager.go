@@ -2,12 +2,9 @@ package upstream
 
 import (
 	"errors"
-	"sync"
-	"time"
-
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"github.com/twoshark/balanceproxy/upstream/ethereum"
+	"sync"
 )
 
 var (
@@ -95,42 +92,4 @@ func (m *Manager) GetClient() (ethereum.IClient, error) {
 		return m.Clients[i], nil
 	}
 	return nil, errNoHealthyUpstreamClient
-}
-
-func (m *Manager) StartHealthCheck() chan bool {
-	failureCount := 0
-	failureLimit := viper.GetInt("HEALTH_FAILURE_THRESHOLD")
-	period := viper.GetInt("HEALTH_CHECK_PERIOD")
-	successStreak := 0
-	successThreshold := viper.GetInt("HEALTH_SUCCESS_THRESHOLD")
-	ticker := time.NewTicker(time.Duration(period) * time.Second)
-	quitHealthCheck = make(chan bool)
-	go func() {
-		for {
-			select {
-			case <-quitHealthCheck:
-				return
-			case <-ticker.C:
-				log.Trace("HealthCheck Heartbeat")
-				for _, client := range m.Clients {
-					err := client.HealthCheck()
-					if err != nil {
-						log.Error("UpstreamClient Health Check Failure: ", err)
-						failureCount++
-						successStreak = 0
-						if failureCount > failureLimit {
-							client.SetHealth(false)
-						}
-						continue
-					}
-
-					successStreak++
-					if !client.Healthy() && successStreak >= successThreshold {
-						client.SetHealth(true)
-					}
-				}
-			}
-		}
-	}()
-	return quitHealthCheck
 }
