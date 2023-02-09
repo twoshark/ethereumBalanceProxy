@@ -22,7 +22,8 @@ func (c *Client) HealthCheck() error {
 	}
 
 	if sync != nil {
-		bytes, err := json.Marshal(sync)
+		var bytes []byte
+		bytes, err = json.Marshal(sync)
 		if err != nil {
 			return err
 		}

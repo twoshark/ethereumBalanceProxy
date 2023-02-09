@@ -42,9 +42,10 @@ func (m *Manager) ConnectAll() error {
 	wg.Add(clientCount)
 	availableChans := make(chan bool, clientCount)
 	for i := range m.Clients {
+		index := i // to quiet linter
 		go func() {
 			defer wg.Done()
-			availableChans <- m.Connect(m.Clients[i])
+			availableChans <- m.Connect(m.Clients[index])
 		}()
 	}
 	wg.Wait()
@@ -71,8 +72,8 @@ func (m *Manager) Connect(client ethereum.IClient) bool {
 		log.Error("client failed to connect: ", err)
 		return false
 	}
-	err := client.HealthCheck()
-	if err != nil {
+
+	if err := client.HealthCheck(); err != nil {
 		log.Error("client failed health check and will not be available for calls until (Manager).Connect() is run again: ", err)
 		return false
 	}

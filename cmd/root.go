@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 	"github.com/twoshark/balanceproxy/common"
-	"os"
 )
 
 // rootCmd represents the base command when called without any subcommands.

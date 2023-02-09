@@ -4,7 +4,7 @@ orbs:
 executors:
   docker-publisher:
     docker:
-      - image: 	cimg/base:2023.02
+      - image: cimg/base:2023.02
 jobs:
   build:
     docker:
@@ -17,6 +17,9 @@ jobs:
       - run:
           name: Install dependencies
           command: sudo apt update -y && sudo apt install -y libpcap-dev
+      - run:
+          name: go mod vendor
+          command: go mod vendor
       - run:
           name: Build go project
           command: make build
@@ -33,6 +36,9 @@ jobs:
           name: Install dependencies
           command: sudo apt update -y && sudo apt install -y libpcap-dev
       - run:
+          name: go mod vendor
+          command: go mod vendor
+      - run:
           name: Build go project
           command: make test
 
@@ -44,6 +50,9 @@ jobs:
       - run:
           name: Install dependencies
           command: apt update -y && apt install -y libpcap-dev
+      - run:
+          name: gofumpt install
+          command: go install mvdan.cc/gofumpt@latest
       - run:
           name: go mod vendor
           command: go mod vendor
