@@ -7,7 +7,6 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 // HealthCheck verifies that the upstream node is not running a sync process
@@ -54,25 +53,26 @@ func (c *Client) HealthCheck() error {
 func (c *Client) isBlockHeightIncreasing(startBlock uint64) error {
 	// Verify that block height is climbing at a reasonable pace
 	blockHeightIncreased := 0
-	increasesObservedThreshold := 3
+	increaseObservationWindow := 3
 
 	var block uint64
 	lastBlock := startBlock
 	var err error
-	period := viper.GetInt64("HEALTH_BLOCK_HEIGHT_CHECK_PERIOD_MS")
-	for i := 0; i < increasesObservedThreshold; i++ {
+	//period := viper.GetInt64("HEALTH_BLOCK_HEIGHT_CHECK_PERIOD_MS")
+
+	for i := 0; i < increaseObservationWindow; i++ {
 		block, err = c.EthClient().BlockNumber(context.Background())
 		if err != nil {
 			return err
 		}
-
+		log.Print(block, ":", lastBlock)
 		if block > lastBlock {
-			blockHeightIncreased++
+			return nil
 		} else if block < lastBlock {
 			return errUpstreamRewind
 		}
 		lastBlock = block
-		time.Sleep(time.Duration(period) * time.Millisecond) // Eth Avg Block Time is 12.06s
+		time.Sleep(12 * time.Second) // Eth Avg Block Time is 12.06s
 	}
 
 	if blockHeightIncreased <= 1 {

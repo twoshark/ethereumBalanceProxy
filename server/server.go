@@ -15,7 +15,7 @@ import (
 	"github.com/twoshark/balanceproxy/common"
 )
 
-func Start(config common.AppConfiguration) {
+func Start(config common.AppConfiguration, ready chan bool) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 
@@ -38,6 +38,7 @@ func Start(config common.AppConfiguration) {
 	e.GET("/ethereum/balance/:account", bp.GetLatestBalance)
 	e.GET("/ethereum/balance/:account/block/:block", bp.GetBalance)
 
+	ready <- true
 	// Start server
 	if err := e.Start(":" + config.ListenPort); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		e.Logger.Fatal("shutting down the server")

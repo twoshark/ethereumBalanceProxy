@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twoshark/balanceproxy/common"
@@ -17,7 +18,10 @@ var serverCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		port := viper.GetString("PORT")
 		config := common.NewAppConfiguration(port, endpointsFlag)
-		server.Start(config)
+		ready := make(chan bool)
+		server.Start(config, ready)
+		<-ready
+		log.Print("Server is ready to receive requests")
 	},
 }
 
