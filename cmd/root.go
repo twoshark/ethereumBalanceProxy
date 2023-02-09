@@ -4,13 +4,13 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	"github.com/twoshark/alluvial1-1/common"
 )
 
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
-	Use:   "allluvial1-1",
-	Short: "A brief description of your application",
+	Use:   "balanceProxy",
+	Short: "Ethereum Balance Proxy",
 	Long:  ``,
 }
 
@@ -22,12 +22,12 @@ func Execute() {
 	}
 }
 
+// nolint: gochecknoinits
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	viper.AutomaticEnv() // read in environment variables that match
+	common.CobraInit()
 }
