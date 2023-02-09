@@ -72,4 +72,5 @@ func (c *Client) isBlockHeightIncreasing() error {
 			return errBlockHeightIncreaseTooSlow
 		}
 	}
+	return nil
 }
