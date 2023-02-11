@@ -14,7 +14,6 @@ import (
 // HealthCheck verifies that the upstream node is not running a sync process
 // and that its block height is increasing
 func (c *Client) HealthCheck() error {
-	c.SetHealth(false)
 	// Verify that no sync process is running
 	sync, err := c.SyncProgress(context.Background())
 	if err != nil {
@@ -36,7 +35,6 @@ func (c *Client) HealthCheck() error {
 		return err
 	}
 
-	c.SetHealth(true)
 	return nil
 }
 

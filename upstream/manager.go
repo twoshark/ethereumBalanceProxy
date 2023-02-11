@@ -13,8 +13,6 @@ var (
 	errNoHealthyUpstreamClient = errors.New("no healthy upstream client available")
 )
 
-// var quitHealthCheck chan bool
-
 // Manager maintains health status for Clients and provides Clients to calling code.
 type Manager struct {
 	Clients   []ethereum.IClient
@@ -46,7 +44,7 @@ func (m *Manager) ConnectAll() error {
 		index := i // to quiet linter
 		go func() {
 			defer wg.Done()
-			availableChans <- m.Connect(m.Clients[index])
+			availableChans <- m.Connect(m.Clients[index], index)
 		}()
 	}
 	wg.Wait()
@@ -66,10 +64,10 @@ func (m *Manager) ConnectAll() error {
 	return nil
 }
 
-// Connect dials a Client and if successful, checks its health
+// Connect dials a Client and if successful, checks its health and sets it in the client
 // If both succeed the client is marked healthy
 // This returns true for a connected and healthy client, otherwise false
-func (m *Manager) Connect(client ethereum.IClient) bool {
+func (m *Manager) Connect(client ethereum.IClient, index int) bool {
 	if err := client.Dial(); err != nil {
 		log.Error("client failed to connect: ", err)
 		return false
@@ -79,6 +77,9 @@ func (m *Manager) Connect(client ethereum.IClient) bool {
 		log.Error("client failed health check and will not be available for calls until (Manager).Connect() is run again: ", err)
 		return false
 	}
+	client.SetHealth(true)
+	m.Clients[index] = client
+
 	return true
 }
 
