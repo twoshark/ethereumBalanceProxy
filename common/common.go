@@ -1,10 +1,12 @@
 package common
 
 import (
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 func CobraInit() {
+	log.SetLevel(log.InfoLevel)
 	viper.SetDefault("HEALTH_FAILURE_THRESHOLD", 2)
 	viper.SetDefault("HEALTH_CHECK_PERIOD", 60)
 	viper.SetDefault("HEALTH_SUCCESS_THRESHOLD", 4)

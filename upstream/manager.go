@@ -2,9 +2,10 @@ package upstream
 
 import (
 	"errors"
+	"sync"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/twoshark/balanceproxy/upstream/ethereum"
-	"sync"
 )
 
 var (
@@ -12,23 +13,25 @@ var (
 	errNoHealthyUpstreamClient = errors.New("no healthy upstream client available")
 )
 
-var quitHealthCheck chan bool
+// var quitHealthCheck chan bool
 
 // Manager maintains health status for Clients and provides Clients to calling code.
 type Manager struct {
-	Clients []ethereum.IClient
+	Clients   []ethereum.IClient
+	endpoints []string
 }
 
 func NewManager(endpoints []string) *Manager {
 	mgr := new(Manager)
+	mgr.endpoints = endpoints
 	mgr.Clients = make([]ethereum.IClient, len(endpoints))
 	return mgr
 }
 
 // LoadClients instantiates an ethereum.Client in m.Clients for each provided endpoint
-func (m *Manager) LoadClients(endpoints []string) {
-	for i := 0; i < len(endpoints); i++ {
-		m.Clients[i] = ethereum.NewClient(endpoints[i])
+func (m *Manager) LoadClients() {
+	for i := 0; i < len(m.endpoints); i++ {
+		m.Clients[i] = ethereum.NewClient(m.endpoints[i])
 	}
 }
 

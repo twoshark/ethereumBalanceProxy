@@ -29,9 +29,9 @@ var serverCmd = &cobra.Command{
 // nolint: gochecknoinits
 func init() {
 	rootCmd.AddCommand(serverCmd)
-	dummyRpcUrl := "http://ethereumrpc1.com, https://localhost:8545"
-	endpointsFlag = serverCmd.PersistentFlags().String("upstreams", dummyRpcUrl, "A comma separated list of backend endpoints to proxy")
-	if *endpointsFlag == dummyRpcUrl {
+	dummyRPRCURL := "http://ethereumrpc1.com, https://localhost:8545"
+	endpointsFlag = serverCmd.PersistentFlags().String("upstreams", dummyRPRCURL, "A comma separated list of backend endpoints to proxy")
+	if *endpointsFlag == dummyRPRCURL {
 		log.Error("Please provide 1 or more ethereum json rpc endpoints with the --upstreams flag. \neth_balance_proxy server --upstreams $ETH_RPC_ENDPOINT,$ETH_RPC_ENDPOINT")
 		log.Exit(1)
 	}

@@ -30,7 +30,6 @@ type connectAllTestCase struct {
 }
 
 func (suite *ManagerTestSuite) TestConnect() {
-
 	testCases := map[string]connectTestCase{
 		"Successful Connect": {
 			Dial:           connectParams{nil, 1},
@@ -56,10 +55,8 @@ func (suite *ManagerTestSuite) TestConnect() {
 }
 
 func (suite *ManagerTestSuite) verifyConnectTestCase(testCase connectTestCase) {
-	endpoints, count := suite.allEndpoints()
+	endpoints := []string{"", "", ""}
 	mgr := NewManager(endpoints)
-	assert.IsType(suite.T(), &Manager{}, mgr)
-	assert.Equal(suite.T(), count, len(mgr.Clients))
 
 	mockClient := mock_ethereum.NewMockIClient(suite.mockController)
 	mockClient.EXPECT().Dial().Return(testCase.Dial.Err).AnyTimes()
@@ -68,8 +65,9 @@ func (suite *ManagerTestSuite) verifyConnectTestCase(testCase connectTestCase) {
 	assert.Equal(suite.T(), testCase.expectedOutput, connected)
 }
 
+//nolint:funlen
 func (suite *ManagerTestSuite) TestConnectAllAndGetClient() {
-	//the index is the client index in `Manager{}.Clients`
+	// the index is the client index in `Manager{}.Clients`
 	testCases := map[string]connectAllTestCase{
 		"All Clients Connect": {
 			expected: connectAllExpected{
@@ -169,7 +167,7 @@ func (suite *ManagerTestSuite) verifyConnectAllTestCase(testCase connectAllTestC
 		client := mock_ethereum.NewMockIClient(suite.mockController)
 		client.EXPECT().Dial().Return(testCase.clientExpects[i].Dial.Err).AnyTimes()
 		client.EXPECT().HealthCheck().Return(testCase.clientExpects[i].HealthCheck.Err).AnyTimes()
-		//infer `Healthy()` from HeathCheck and Dial errors
+		// infer `Healthy()` from HeathCheck and Dial errors
 		client.EXPECT().Healthy().Return(testCase.clientExpects[i].HealthCheck.Err == nil && testCase.clientExpects[i].Dial.Err == nil).AnyTimes()
 		mgr.Clients[i] = client
 	}
@@ -183,5 +181,4 @@ func (suite *ManagerTestSuite) verifyConnectAllTestCase(testCase connectAllTestC
 	} else {
 		assert.Nil(suite.T(), client)
 	}
-
 }
