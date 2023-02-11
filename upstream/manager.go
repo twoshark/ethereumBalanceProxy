@@ -25,6 +25,7 @@ func NewManager(endpoints []string) *Manager {
 	return mgr
 }
 
+// LoadClients instantiates an ethereum.Client in m.Clients for each provided endpoint
 func (m *Manager) LoadClients(endpoints []string) {
 	for i := 0; i < len(endpoints); i++ {
 		m.Clients[i] = ethereum.NewClient(endpoints[i])
