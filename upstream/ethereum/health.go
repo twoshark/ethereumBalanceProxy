@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/spf13/viper"
 	"time"
+
+	"github.com/spf13/viper"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -13,7 +14,6 @@ import (
 // HealthCheck verifies that the upstream node is not running a sync process
 // and that its block height is increasing
 func (c *Client) HealthCheck() error {
-	c.SetHealth(false)
 	// Verify that no sync process is running
 	sync, err := c.SyncProgress(context.Background())
 	if err != nil {
@@ -35,7 +35,6 @@ func (c *Client) HealthCheck() error {
 		return err
 	}
 
-	c.SetHealth(true)
 	return nil
 }
 
@@ -73,4 +72,34 @@ func (c *Client) isBlockHeightIncreasing() error {
 		}
 	}
 	return nil
+}
+
+func (c *Client) CountHealthCheckSuccess() {
+	failureForgive := viper.GetInt("HEALTH_FAILURE_FORGIVENESS_THRESHOLD")
+	successThreshold := viper.GetInt("HEALTH_SUCCESS_THRESHOLD")
+	c.successStreak++
+	if !c.healthy && c.successStreak >= successThreshold {
+		c.failureCount = 0
+		c.SetHealth(true)
+		log.WithFields(log.Fields{
+			"upstream": c.endpoint,
+		}).Print("upstream now healthy")
+	}
+	if c.successStreak > failureForgive {
+		c.failureCount = 0
+		c.successStreak = 0 // prevent eventual overflow
+	}
+}
+
+func (c *Client) CountHealthCheckFailure() {
+	failureLimit := viper.GetInt("HEALTH_FAILURE_THRESHOLD")
+	c.failureCount++
+	c.successStreak = 0
+	if c.failureCount > failureLimit {
+		c.failureCount = 0 // prevent eventual overflow
+		c.SetHealth(false)
+		log.WithFields(log.Fields{
+			"upstream": c.endpoint,
+		}).Error("upstream has exceeded failure threshold and has been marked unhealthy")
+	}
 }

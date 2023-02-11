@@ -1,6 +1,7 @@
 package upstream
 
 import (
+	"github.com/golang/mock/gomock"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	mock_ethereum "github.com/twoshark/balanceproxy/mocks"
@@ -30,7 +31,6 @@ type connectAllTestCase struct {
 }
 
 func (suite *ManagerTestSuite) TestConnect() {
-
 	testCases := map[string]connectTestCase{
 		"Successful Connect": {
 			Dial:           connectParams{nil, 1},
@@ -56,20 +56,20 @@ func (suite *ManagerTestSuite) TestConnect() {
 }
 
 func (suite *ManagerTestSuite) verifyConnectTestCase(testCase connectTestCase) {
-	endpoints, count := suite.allEndpoints()
+	endpoints := []string{"", "", ""}
 	mgr := NewManager(endpoints)
-	assert.IsType(suite.T(), &Manager{}, mgr)
-	assert.Equal(suite.T(), count, len(mgr.Clients))
 
 	mockClient := mock_ethereum.NewMockIClient(suite.mockController)
 	mockClient.EXPECT().Dial().Return(testCase.Dial.Err).AnyTimes()
 	mockClient.EXPECT().HealthCheck().Return(testCase.HealthCheck.Err).AnyTimes()
-	connected := mgr.Connect(mockClient)
+	mockClient.EXPECT().SetHealth(gomock.Any()).AnyTimes()
+	connected := mgr.Connect(mockClient, 0)
 	assert.Equal(suite.T(), testCase.expectedOutput, connected)
 }
 
+//nolint:funlen
 func (suite *ManagerTestSuite) TestConnectAllAndGetClient() {
-	//the index is the client index in `Manager{}.Clients`
+	// the index is the client index in `Manager{}.Clients`
 	testCases := map[string]connectAllTestCase{
 		"All Clients Connect": {
 			expected: connectAllExpected{
@@ -169,8 +169,10 @@ func (suite *ManagerTestSuite) verifyConnectAllTestCase(testCase connectAllTestC
 		client := mock_ethereum.NewMockIClient(suite.mockController)
 		client.EXPECT().Dial().Return(testCase.clientExpects[i].Dial.Err).AnyTimes()
 		client.EXPECT().HealthCheck().Return(testCase.clientExpects[i].HealthCheck.Err).AnyTimes()
-		//infer `Healthy()` from HeathCheck and Dial errors
-		client.EXPECT().Healthy().Return(testCase.clientExpects[i].HealthCheck.Err == nil && testCase.clientExpects[i].Dial.Err == nil).AnyTimes()
+		// infer `Healthy()` from HeathCheck and Dial errors
+		healthy := testCase.clientExpects[i].HealthCheck.Err == nil && testCase.clientExpects[i].Dial.Err == nil
+		client.EXPECT().Healthy().Return(healthy).AnyTimes()
+		client.EXPECT().SetHealth(healthy).AnyTimes()
 		mgr.Clients[i] = client
 	}
 	err := mgr.ConnectAll()
@@ -183,5 +185,4 @@ func (suite *ManagerTestSuite) verifyConnectAllTestCase(testCase connectAllTestC
 	} else {
 		assert.Nil(suite.T(), client)
 	}
-
 }

@@ -13,22 +13,26 @@ import (
 )
 
 type IClient interface {
-	Healthy() bool
-	SetHealth(bool)
-	Dial() error
 	BalanceAt(ctx context.Context, account common.Address, blockNumber *big.Int) (*big.Int, error)
 	BlockNumber(ctx context.Context) (uint64, error)
-	SyncProgress(ctx context.Context) (*ethereum.SyncProgress, error)
-	HealthCheck() error
+	CountHealthCheckFailure()
+	CountHealthCheckSuccess()
+	Dial() error
 	EthClient() *ethclient.Client
+	Healthy() bool
+	HealthCheck() error
+	SetHealth(bool)
+	SyncProgress(ctx context.Context) (*ethereum.SyncProgress, error)
 }
 
 type Client struct {
-	endpoint    string
-	ethClient   *ethclient.Client
-	healthy     bool // healthy means the ethClient is connected and available to call
-	healthyLock sync.Mutex
-	clientLock  sync.Mutex
+	endpoint      string
+	ethClient     *ethclient.Client
+	healthy       bool // healthy means the ethClient is connected and available to call
+	successStreak int
+	failureCount  int
+	healthyLock   sync.Mutex
+	clientLock    sync.Mutex
 }
 
 func NewClient(endpoint string) *Client {

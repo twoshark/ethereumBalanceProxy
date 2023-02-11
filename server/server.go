@@ -20,11 +20,9 @@ func Start(config common.AppConfiguration, ready chan bool) {
 	wg.Add(1)
 
 	bp := NewBalanceProxy(config)
-	go func() {
-		defer wg.Done()
-		bp.InitClients(config)
-	}()
-	wg.Wait()
+	bp.InitClients()
+
+	quitHealthChecker := bp.UpstreamManager.StartHealthCheck()
 
 	// Echo instance
 	e := echo.New()
@@ -38,7 +36,8 @@ func Start(config common.AppConfiguration, ready chan bool) {
 	e.GET("/ethereum/balance/:account", bp.GetLatestBalance)
 	e.GET("/ethereum/balance/:account/block/:block", bp.GetBalance)
 
-	ready <- true
+	go func() { ready <- true }()
+
 	// Start server
 	if err := e.Start(":" + config.ListenPort); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		e.Logger.Fatal("shutting down the server")
@@ -48,6 +47,7 @@ func Start(config common.AppConfiguration, ready chan bool) {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
+	go func() { quitHealthChecker <- true }()
 	timeout := viper.GetInt("SHUTDOWN_TIMEOUT")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
 	defer cancel()
