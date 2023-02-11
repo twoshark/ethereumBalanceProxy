@@ -47,6 +47,7 @@ func (m *Manager) ConnectAll() error {
 		}()
 	}
 	wg.Wait()
+	close(availableChans)
 	var anyAvailable bool
 	for available := range availableChans {
 		if available {
@@ -82,12 +83,12 @@ func (m *Manager) Connect(client ethereum.IClient) bool {
 func (m *Manager) GetClient() (ethereum.IClient, error) {
 	for i := 0; i < len(m.Clients); i++ {
 		if !m.Clients[i].Healthy() {
-			go func() {
+			go func(i int) {
 				err := m.Clients[i].Dial()
 				if err != nil {
 					log.Error("Redial failed for: ", m.Clients[i])
 				}
-			}()
+			}(i)
 			continue
 		}
 		return m.Clients[i], nil
