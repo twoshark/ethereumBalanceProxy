@@ -22,7 +22,6 @@ linters:
     - varcheck
     - whitespace
     - errorlint
-    - funlen
     - gocognit
     - gocritic
     - ifshort
@@ -42,8 +41,6 @@ linters-settings:
   errcheck:
     check-type-assertions: true
     check-blank: true
-  funlen:
-    lines: 40
   govet:
     check-shadowing: true
   gci:

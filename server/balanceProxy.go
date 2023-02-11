@@ -26,8 +26,8 @@ func NewBalanceProxy(config common.AppConfiguration) *BalanceProxy {
 	return bp
 }
 
-func (bp *BalanceProxy) InitClients(config common.AppConfiguration) {
-	bp.UpstreamManager.LoadClients(config.Endpoints)
+func (bp *BalanceProxy) InitClients() {
+	bp.UpstreamManager.LoadClients()
 	var err error
 	for {
 		err = bp.UpstreamManager.ConnectAll()

@@ -2,9 +2,10 @@ package upstream
 
 import (
 	"errors"
+	"sync"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/twoshark/balanceproxy/upstream/ethereum"
-	"sync"
 )
 
 var (
@@ -12,22 +13,23 @@ var (
 	errNoHealthyUpstreamClient = errors.New("no healthy upstream client available")
 )
 
-var quitHealthCheck chan bool
-
 // Manager maintains health status for Clients and provides Clients to calling code.
 type Manager struct {
-	Clients []ethereum.IClient
+	Clients   []ethereum.IClient
+	endpoints []string
 }
 
 func NewManager(endpoints []string) *Manager {
 	mgr := new(Manager)
+	mgr.endpoints = endpoints
 	mgr.Clients = make([]ethereum.IClient, len(endpoints))
 	return mgr
 }
 
-func (m *Manager) LoadClients(endpoints []string) {
-	for i := 0; i < len(endpoints); i++ {
-		m.Clients[i] = ethereum.NewClient(endpoints[i])
+// LoadClients instantiates an ethereum.Client in m.Clients for each provided endpoint
+func (m *Manager) LoadClients() {
+	for i := 0; i < len(m.endpoints); i++ {
+		m.Clients[i] = ethereum.NewClient(m.endpoints[i])
 	}
 }
 
@@ -42,10 +44,11 @@ func (m *Manager) ConnectAll() error {
 		index := i // to quiet linter
 		go func() {
 			defer wg.Done()
-			availableChans <- m.Connect(m.Clients[index])
+			availableChans <- m.Connect(index)
 		}()
 	}
 	wg.Wait()
+	close(availableChans)
 	var anyAvailable bool
 	for available := range availableChans {
 		if available {
@@ -61,19 +64,21 @@ func (m *Manager) ConnectAll() error {
 	return nil
 }
 
-// Connect dials a Client and if successful, checks its health
+// Connect dials a Client and if successful, checks its health and sets it in the client
 // If both succeed the client is marked healthy
 // This returns true for a connected and healthy client, otherwise false
-func (m *Manager) Connect(client ethereum.IClient) bool {
-	if err := client.Dial(); err != nil {
+func (m *Manager) Connect(index int) bool {
+	if err := m.Clients[index].Dial(); err != nil {
 		log.Error("client failed to connect: ", err)
 		return false
 	}
 
-	if err := client.HealthCheck(); err != nil {
+	if err := m.Clients[index].HealthCheck(); err != nil {
 		log.Error("client failed health check and will not be available for calls until (Manager).Connect() is run again: ", err)
 		return false
 	}
+	m.Clients[index].SetHealth(true)
+
 	return true
 }
 
@@ -81,12 +86,12 @@ func (m *Manager) Connect(client ethereum.IClient) bool {
 func (m *Manager) GetClient() (ethereum.IClient, error) {
 	for i := 0; i < len(m.Clients); i++ {
 		if !m.Clients[i].Healthy() {
-			go func() {
+			go func(i int) {
 				err := m.Clients[i].Dial()
 				if err != nil {
 					log.Error("Redial failed for: ", m.Clients[i])
 				}
-			}()
+			}(i)
 			continue
 		}
 		return m.Clients[i], nil

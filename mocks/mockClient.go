@@ -96,6 +96,18 @@ func (mr *MockIClientMockRecorder) EthClient() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EthClient", reflect.TypeOf((*MockIClient)(nil).EthClient))
 }
 
+// EvaluatedHealthCheck mocks base method.
+func (m *MockIClient) EvaluatedHealthCheck() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "EvaluatedHealthCheck")
+}
+
+// EvaluatedHealthCheck indicates an expected call of EvaluatedHealthCheck.
+func (mr *MockIClientMockRecorder) EvaluatedHealthCheck() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EvaluatedHealthCheck", reflect.TypeOf((*MockIClient)(nil).EvaluatedHealthCheck))
+}
+
 // HealthCheck mocks base method.
 func (m *MockIClient) HealthCheck() error {
 	m.ctrl.T.Helper()
