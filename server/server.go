@@ -22,7 +22,7 @@ func Start(config common.AppConfiguration, ready chan bool) {
 	bp := NewBalanceProxy(config)
 	bp.InitClients()
 
-	quitHealtChecker := bp.UpstreamManager.StartHealthCheck()
+	quitHealthChecker := bp.UpstreamManager.StartHealthCheck()
 
 	// Echo instance
 	e := echo.New()
@@ -47,7 +47,7 @@ func Start(config common.AppConfiguration, ready chan bool) {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
-	go func() { quitHealtChecker <- true }()
+	go func() { quitHealthChecker <- true }()
 	timeout := viper.GetInt("SHUTDOWN_TIMEOUT")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
 	defer cancel()
