@@ -35,6 +35,8 @@ func Start(config common.AppConfiguration, ready chan bool) {
 	e.GET("/", bp.RootHandler)
 	e.GET("/ethereum/balance/:account", bp.GetLatestBalance)
 	e.GET("/ethereum/balance/:account/block/:block", bp.GetBalance)
+	e.GET("/live", bp.LiveHandler)
+	e.GET("/ready", bp.ReadyHandler)
 
 	p := echoProm.NewPrometheus("echo", nil)
 	p.Use(e)
