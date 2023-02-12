@@ -1,6 +1,9 @@
 package common
 
-import "strings"
+import (
+	"github.com/twoshark/balanceproxy/src/metrics"
+	"strings"
+)
 
 // AppConfiguration is a convenience wrapper for values from flags and env vars.
 type AppConfiguration struct {
@@ -9,8 +12,10 @@ type AppConfiguration struct {
 }
 
 func NewAppConfiguration(listenPort string, endpointsFlag *string) AppConfiguration {
+	endpoints := strings.Split(*endpointsFlag, ",")
+	metrics.Metrics().ConfiguredUpstreams.Set(float64(len(endpoints)))
 	return AppConfiguration{
 		ListenPort: listenPort,
-		Endpoints:  strings.Split(*endpointsFlag, ","),
+		Endpoints:  endpoints,
 	}
 }

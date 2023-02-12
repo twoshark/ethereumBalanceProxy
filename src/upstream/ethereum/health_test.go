@@ -1,13 +1,13 @@
 package ethereum
 
 import (
+	"github.com/twoshark/balanceproxy/src/common"
 	"os"
 	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"github.com/twoshark/balanceproxy/common"
 )
 
 type ClientHealthTestSuite struct {

@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"github.com/twoshark/balanceproxy/src/common"
 	"net/http"
 	"strconv"
 	"testing"
@@ -12,7 +13,6 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"github.com/twoshark/balanceproxy/common"
 )
 
 type ServerTestSuite struct {

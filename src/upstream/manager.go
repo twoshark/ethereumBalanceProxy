@@ -2,10 +2,10 @@ package upstream
 
 import (
 	"errors"
+	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
 	"sync"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/twoshark/balanceproxy/upstream/ethereum"
 )
 
 var (
@@ -56,6 +56,7 @@ func (m *Manager) ConnectAll() error {
 			break
 		}
 	}
+	m.ExportHealthyUpstreamCount()
 
 	if !anyAvailable {
 		return errNoUpstreamAvailable

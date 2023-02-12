@@ -1,6 +1,8 @@
 package server
 
 import (
+	"github.com/twoshark/balanceproxy/src/common"
+	"github.com/twoshark/balanceproxy/src/upstream"
 	"math/big"
 	"net/http"
 	"strconv"
@@ -10,8 +12,6 @@ import (
 
 	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/labstack/echo/v4"
-	"github.com/twoshark/balanceproxy/common"
-	"github.com/twoshark/balanceproxy/upstream"
 )
 
 // BalanceProxy contains the handlers for the server.

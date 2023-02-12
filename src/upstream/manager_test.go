@@ -2,13 +2,12 @@ package upstream
 
 import (
 	"errors"
+	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/twoshark/balanceproxy/upstream/ethereum"
 
 	"github.com/golang/mock/gomock"
 	_ "github.com/golang/mock/mockgen/model"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 

@@ -4,8 +4,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/twoshark/balanceproxy/common"
-	"github.com/twoshark/balanceproxy/server"
+	"github.com/twoshark/balanceproxy/src/common"
+	"github.com/twoshark/balanceproxy/src/server"
 )
 
 var endpointsFlag *string
