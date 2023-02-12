@@ -105,8 +105,7 @@ func (c *Client) processHealthCheckFailure() {
 }
 
 func (c *Client) EvaluatedHealthCheck() {
-	err := c.HealthCheck()
-	if err != nil {
+	if err := c.HealthCheck(); err != nil {
 		log.WithFields(log.Fields{
 			"upstream": c.endpoint,
 		}).Error("health check failed: ", err)

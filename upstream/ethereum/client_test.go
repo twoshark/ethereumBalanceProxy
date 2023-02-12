@@ -9,9 +9,8 @@ import (
 )
 
 var (
-	badEndpoint    = "1'M A R3@L Y0U 4R3 3LL"
-	nonEthEndpoint = "https://www.google.com"
-	goodEndpoint   = "https://fittest-falling-smoke.discover.quiknode.pro/" // TODO: remove external dep
+	badEndpoint  = "1'M A R3@L Y0U 4R3 3LL"
+	goodEndpoint = "https://fittest-falling-smoke.discover.quiknode.pro/" // TODO: remove external dep
 )
 
 type ClientTestSuite struct {
