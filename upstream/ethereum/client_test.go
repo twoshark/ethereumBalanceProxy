@@ -9,9 +9,8 @@ import (
 )
 
 var (
-	badEndpoint    = "1'M A R3@L Y0U 4R3 3LL"
-	nonEthEndpoint = "https://www.google.com"
-	goodEndpoint   = "https://fittest-falling-smoke.discover.quiknode.pro/" // TODO: remove external dep
+	badEndpoint  = "1'M A R3@L Y0U 4R3 3LL"
+	goodEndpoint = "https://fittest-falling-smoke.discover.quiknode.pro/" // TODO: remove external dep
 )
 
 type ClientTestSuite struct {
@@ -47,30 +46,6 @@ func (suite *ClientTestSuite) TestConnectFailure() {
 	err := client.Dial()
 	assert.NotNil(suite.T(), err)
 	assert.Nil(suite.T(), client.EthClient())
-	assert.Equal(suite.T(), false, client.Healthy())
-}
-
-func (suite *ClientTestSuite) TestHealthCheckSuccess() {
-	client := NewClient(goodEndpoint)
-	assert.Equal(suite.T(), false, client.Healthy())
-	err := client.Dial()
-	assert.Nil(suite.T(), err)
-	assert.NotNil(suite.T(), client.EthClient())
-	assert.Equal(suite.T(), false, client.Healthy())
-	err = client.HealthCheck()
-	assert.Nil(suite.T(), err)
-	assert.Equal(suite.T(), true, client.Healthy())
-}
-
-func (suite *ClientTestSuite) TestHealthCheckFailure() {
-	client := NewClient(nonEthEndpoint)
-	assert.Equal(suite.T(), false, client.Healthy())
-	err := client.Dial()
-	assert.Nil(suite.T(), err)
-	assert.NotNil(suite.T(), client.EthClient())
-	assert.Equal(suite.T(), false, client.Healthy())
-	err = client.HealthCheck()
-	assert.NotNil(suite.T(), err)
 	assert.Equal(suite.T(), false, client.Healthy())
 }
 

@@ -8,7 +8,8 @@ import (
 	"github.com/twoshark/balanceproxy/server"
 )
 
-var endpointsFlag *string
+var upstreamsFlag *string
+var dummyRPCURLs = "https://ethereumrpc1.com, https://localhost:8545"
 
 // serverCmd represents the server command.
 var serverCmd = &cobra.Command{
@@ -16,8 +17,12 @@ var serverCmd = &cobra.Command{
 	Short: "Ethereum Balance Proxy Server",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
+		if *upstreamsFlag == dummyRPCURLs {
+			log.Error("Please provide 1 or more ethereum json rpc endpoints with the --upstreams flag. \neth_balance_proxy server --upstreams $ETH_RPC_ENDPOINT,$ETH_RPC_ENDPOINT")
+			log.Exit(1)
+		}
 		port := viper.GetString("PORT")
-		config := common.NewAppConfiguration(port, endpointsFlag)
+		config := common.NewAppConfiguration(port, upstreamsFlag)
 		ready := make(chan bool)
 		server.Start(config, ready)
 		<-ready
@@ -29,10 +34,6 @@ var serverCmd = &cobra.Command{
 // nolint: gochecknoinits
 func init() {
 	rootCmd.AddCommand(serverCmd)
-	dummyRPRCURL := "http://ethereumrpc1.com, https://localhost:8545"
-	endpointsFlag = serverCmd.PersistentFlags().String("upstreams", dummyRPRCURL, "A comma separated list of backend endpoints to proxy")
-	if *endpointsFlag == dummyRPRCURL {
-		log.Error("Please provide 1 or more ethereum json rpc endpoints with the --upstreams flag. \neth_balance_proxy server --upstreams $ETH_RPC_ENDPOINT,$ETH_RPC_ENDPOINT")
-		log.Exit(1)
-	}
+	upstreamsFlag = serverCmd.PersistentFlags().String("upstreams", dummyRPCURLs, "A comma separated list of backend endpoints to proxy")
+
 }

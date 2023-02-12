@@ -44,7 +44,7 @@ func (m *Manager) ConnectAll() error {
 		index := i // to quiet linter
 		go func() {
 			defer wg.Done()
-			availableChans <- m.Connect(m.Clients[index], index)
+			availableChans <- m.Connect(index)
 		}()
 	}
 	wg.Wait()
@@ -67,18 +67,17 @@ func (m *Manager) ConnectAll() error {
 // Connect dials a Client and if successful, checks its health and sets it in the client
 // If both succeed the client is marked healthy
 // This returns true for a connected and healthy client, otherwise false
-func (m *Manager) Connect(client ethereum.IClient, index int) bool {
-	if err := client.Dial(); err != nil {
+func (m *Manager) Connect(index int) bool {
+	if err := m.Clients[index].Dial(); err != nil {
 		log.Error("client failed to connect: ", err)
 		return false
 	}
 
-	if err := client.HealthCheck(); err != nil {
+	if err := m.Clients[index].HealthCheck(); err != nil {
 		log.Error("client failed health check and will not be available for calls until (Manager).Connect() is run again: ", err)
 		return false
 	}
-	client.SetHealth(true)
-	m.Clients[index] = client
+	m.Clients[index].SetHealth(true)
 
 	return true
 }
