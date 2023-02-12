@@ -2,6 +2,7 @@ package upstream
 
 import (
 	"errors"
+	"github.com/twoshark/balanceproxy/src/metrics"
 	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
 	"sync"
 
@@ -56,7 +57,7 @@ func (m *Manager) ConnectAll() error {
 			break
 		}
 	}
-	m.ExportHealthyUpstreamCount()
+	metrics.Metrics().HealthyUpstreams.Set(float64(m.HealthyCount()))
 
 	if !anyAvailable {
 		return errNoUpstreamAvailable

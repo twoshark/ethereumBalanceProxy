@@ -24,19 +24,19 @@ func (m *Manager) StartHealthCheck() chan bool {
 				for i := range m.Clients {
 					m.Clients[i].EvaluatedHealthCheck()
 				}
-				m.ExportHealthyUpstreamCount()
+				metrics.Metrics().HealthyUpstreams.Set(float64(m.HealthyCount()))
 			}
 		}
 	}()
 	return quitHealthCheck
 }
 
-func (m *Manager) ExportHealthyUpstreamCount() {
+func (m *Manager) HealthyCount() int {
 	count := 0
 	for _, client := range m.Clients {
 		if client.Healthy() {
 			count++
 		}
 	}
-	metrics.Metrics().HealthyUpstreams.Set(float64(count))
+	return count
 }
