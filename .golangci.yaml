@@ -43,7 +43,7 @@ linters-settings:
     check-type-assertions: true
     check-blank: true
   funlen:
-    lines: 40
+    lines: 50
   govet:
     check-shadowing: true
   gci:
