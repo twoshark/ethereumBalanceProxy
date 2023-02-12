@@ -73,3 +73,33 @@ func (c *Client) isBlockHeightIncreasing() error {
 	}
 	return nil
 }
+
+func (c *Client) CountHealthCheckSuccess() {
+	failureForgive := viper.GetInt("HEALTH_FAILURE_FORGIVENESS_THRESHOLD")
+	successThreshold := viper.GetInt("HEALTH_SUCCESS_THRESHOLD")
+	c.successStreak++
+	if !c.healthy && c.successStreak >= successThreshold {
+		c.failureCount = 0
+		c.SetHealth(true)
+		log.WithFields(log.Fields{
+			"upstream": c.endpoint,
+		}).Print("upstream now healthy")
+	}
+	if c.successStreak > failureForgive {
+		c.failureCount = 0
+		c.successStreak = 0 // prevent eventual overflow
+	}
+}
+
+func (c *Client) CountHealthCheckFailure() {
+	failureLimit := viper.GetInt("HEALTH_FAILURE_THRESHOLD")
+	c.failureCount++
+	c.successStreak = 0
+	if c.failureCount > failureLimit {
+		c.failureCount = 0 // prevent eventual overflow
+		c.SetHealth(false)
+		log.WithFields(log.Fields{
+			"upstream": c.endpoint,
+		}).Error("upstream has exceeded failure threshold and has been marked unhealthy")
+	}
+}
