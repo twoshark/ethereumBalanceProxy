@@ -1,8 +1,9 @@
 package upstream
 
 import (
-	"github.com/stretchr/testify/suite"
 	"testing"
+
+	"github.com/stretchr/testify/suite"
 )
 
 type UpstreamHealthTestSuite struct {
@@ -13,9 +14,8 @@ func TestUpstreamHealthTestSuite(t *testing.T) {
 	suite.Run(t, new(UpstreamHealthTestSuite))
 }
 
-func (suite UpstreamHealthTestSuite) SetupSuite() {}
-func (suite UpstreamHealthTestSuite) Teardown()   {}
+func (suite *UpstreamHealthTestSuite) SetupSuite() {}
+func (suite *UpstreamHealthTestSuite) Teardown()   {}
 
-func (suite UpstreamHealthTestSuite) TestStartHealthCheck() {
-
+func (suite *UpstreamHealthTestSuite) TestStartHealthCheck() {
 }
