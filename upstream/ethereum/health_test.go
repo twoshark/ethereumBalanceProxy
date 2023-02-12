@@ -1,12 +1,13 @@
 package ethereum
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
-	"github.com/twoshark/balanceproxy/common"
 	"os"
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
+	"github.com/twoshark/balanceproxy/common"
 )
 
 type ClientHealthTestSuite struct {
@@ -22,7 +23,6 @@ func (suite *ClientHealthTestSuite) SetupSuite() {
 }
 
 func (suite *ClientHealthTestSuite) TearDownSuite() {
-
 }
 
 func (suite *ClientHealthTestSuite) TestClient_CountHealthCheck() {
@@ -39,11 +39,11 @@ func (suite *ClientHealthTestSuite) TestClient_CountHealthCheck() {
 	assert.Equal(suite.T(), 0, client.successStreak)
 	assert.Equal(suite.T(), false, client.Healthy())
 
-	//force client to healthy state
+	// force client to healthy state
 	client.healthy = true
 	assert.Equal(suite.T(), true, client.Healthy())
 
-	//verify fail limit
+	// verify fail limit
 	for i := 0; i < failLimit; i++ {
 		client.CountHealthCheckFailure()
 		assert.Equal(suite.T(), i+1, client.failureCount)
@@ -69,7 +69,7 @@ func (suite *ClientHealthTestSuite) TestClient_CountHealthCheck() {
 	assert.Equal(suite.T(), successThreshold, client.successStreak)
 	assert.Equal(suite.T(), true, client.Healthy())
 
-	//verify forgiveness threshold
+	// verify forgiveness threshold
 	client.CountHealthCheckFailure()
 	assert.Equal(suite.T(), 1, client.failureCount)
 	assert.Equal(suite.T(), 0, client.successStreak)
