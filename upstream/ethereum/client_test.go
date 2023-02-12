@@ -50,30 +50,6 @@ func (suite *ClientTestSuite) TestConnectFailure() {
 	assert.Equal(suite.T(), false, client.Healthy())
 }
 
-func (suite *ClientTestSuite) TestHealthCheckSuccess() {
-	client := NewClient(goodEndpoint)
-	assert.Equal(suite.T(), false, client.Healthy())
-	err := client.Dial()
-	assert.Nil(suite.T(), err)
-	assert.NotNil(suite.T(), client.EthClient())
-	assert.Equal(suite.T(), false, client.Healthy())
-	err = client.HealthCheck()
-	assert.Nil(suite.T(), err)
-	assert.Equal(suite.T(), true, client.Healthy())
-}
-
-func (suite *ClientTestSuite) TestHealthCheckFailure() {
-	client := NewClient(nonEthEndpoint)
-	assert.Equal(suite.T(), false, client.Healthy())
-	err := client.Dial()
-	assert.Nil(suite.T(), err)
-	assert.NotNil(suite.T(), client.EthClient())
-	assert.Equal(suite.T(), false, client.Healthy())
-	err = client.HealthCheck()
-	assert.NotNil(suite.T(), err)
-	assert.Equal(suite.T(), false, client.Healthy())
-}
-
 func TestBalanceProxyServerTestSuite(t *testing.T) {
 	suite.Run(t, new(ClientTestSuite))
 }

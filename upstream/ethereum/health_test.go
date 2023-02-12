@@ -25,7 +25,7 @@ func (suite *ClientHealthTestSuite) SetupSuite() {
 func (suite *ClientHealthTestSuite) TearDownSuite() {
 }
 
-func (suite *ClientHealthTestSuite) TestClient_CountHealthCheck() {
+func (suite *ClientHealthTestSuite) TestClient_processHealthCheckCalls() {
 	failLimit := 3
 	forgiveLimit := 10
 	successThreshold := 6
@@ -45,13 +45,13 @@ func (suite *ClientHealthTestSuite) TestClient_CountHealthCheck() {
 
 	// verify fail limit
 	for i := 0; i < failLimit; i++ {
-		client.CountHealthCheckFailure()
+		client.processHealthCheckFailure()
 		assert.Equal(suite.T(), i+1, client.failureCount)
 		assert.Equal(suite.T(), 0, client.successStreak)
 		assert.Equal(suite.T(), true, client.Healthy())
 	}
 
-	client.CountHealthCheckFailure() // this should exceed the limit
+	client.processHealthCheckFailure() // this should exceed the limit
 
 	assert.Equal(suite.T(), 0, client.failureCount)
 	assert.Equal(suite.T(), 0, client.successStreak)
@@ -62,7 +62,7 @@ func (suite *ClientHealthTestSuite) TestClient_CountHealthCheck() {
 		assert.Equal(suite.T(), 0, client.failureCount)
 		assert.Equal(suite.T(), i, client.successStreak)
 		assert.Equal(suite.T(), false, client.Healthy())
-		client.CountHealthCheckSuccess()
+		client.processHealthCheckSuccess()
 	}
 
 	assert.Equal(suite.T(), 0, client.failureCount)
@@ -70,19 +70,19 @@ func (suite *ClientHealthTestSuite) TestClient_CountHealthCheck() {
 	assert.Equal(suite.T(), true, client.Healthy())
 
 	// verify forgiveness threshold
-	client.CountHealthCheckFailure()
+	client.processHealthCheckFailure()
 	assert.Equal(suite.T(), 1, client.failureCount)
 	assert.Equal(suite.T(), 0, client.successStreak)
 	assert.Equal(suite.T(), true, client.Healthy())
 
 	for i := 0; i < forgiveLimit; i++ {
-		client.CountHealthCheckSuccess()
+		client.processHealthCheckSuccess()
 		assert.Equal(suite.T(), 1, client.failureCount)
 		assert.Equal(suite.T(), i+1, client.successStreak)
 		assert.Equal(suite.T(), true, client.Healthy())
 	}
 
-	client.CountHealthCheckSuccess()
+	client.processHealthCheckSuccess()
 	assert.Equal(suite.T(), 0, client.failureCount)
 	assert.Equal(suite.T(), 0, client.successStreak)
 	assert.Equal(suite.T(), true, client.Healthy())

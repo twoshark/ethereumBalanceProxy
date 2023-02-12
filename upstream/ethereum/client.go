@@ -15,8 +15,7 @@ import (
 type IClient interface {
 	BalanceAt(ctx context.Context, account common.Address, blockNumber *big.Int) (*big.Int, error)
 	BlockNumber(ctx context.Context) (uint64, error)
-	CountHealthCheckFailure()
-	CountHealthCheckSuccess()
+	EvaluatedHealthCheck()
 	Dial() error
 	EthClient() *ethclient.Client
 	Healthy() bool

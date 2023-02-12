@@ -3,7 +3,6 @@ package upstream
 import (
 	"time"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -22,15 +21,7 @@ func (m *Manager) StartHealthCheck() chan bool {
 				return
 			case <-ticker.C:
 				for i := range m.Clients {
-					err := m.Clients[i].HealthCheck()
-					if err != nil {
-						log.WithFields(log.Fields{
-							"upstream": m.endpoints[i],
-						}).Error("health check failed: ", err)
-						m.Clients[i].CountHealthCheckFailure()
-						continue
-					}
-					m.Clients[i].CountHealthCheckSuccess()
+					m.Clients[i].EvaluatedHealthCheck()
 				}
 			}
 		}

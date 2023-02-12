@@ -63,7 +63,8 @@ func (suite *ManagerTestSuite) verifyConnectTestCase(testCase connectTestCase) {
 	mockClient.EXPECT().Dial().Return(testCase.Dial.Err).AnyTimes()
 	mockClient.EXPECT().HealthCheck().Return(testCase.HealthCheck.Err).AnyTimes()
 	mockClient.EXPECT().SetHealth(gomock.Any()).AnyTimes()
-	connected := mgr.Connect(mockClient, 0)
+	mgr.Clients[0] = mockClient
+	connected := mgr.Connect(0)
 	assert.Equal(suite.T(), testCase.expectedOutput, connected)
 }
 
