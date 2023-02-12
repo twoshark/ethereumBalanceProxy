@@ -68,6 +68,30 @@ func (mr *MockIClientMockRecorder) BlockNumber(ctx interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BlockNumber", reflect.TypeOf((*MockIClient)(nil).BlockNumber), ctx)
 }
 
+// CountHealthCheckFailure mocks base method.
+func (m *MockIClient) CountHealthCheckFailure() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "CountHealthCheckFailure")
+}
+
+// CountHealthCheckFailure indicates an expected call of CountHealthCheckFailure.
+func (mr *MockIClientMockRecorder) CountHealthCheckFailure() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountHealthCheckFailure", reflect.TypeOf((*MockIClient)(nil).CountHealthCheckFailure))
+}
+
+// CountHealthCheckSuccess mocks base method.
+func (m *MockIClient) CountHealthCheckSuccess() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "CountHealthCheckSuccess")
+}
+
+// CountHealthCheckSuccess indicates an expected call of CountHealthCheckSuccess.
+func (mr *MockIClientMockRecorder) CountHealthCheckSuccess() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountHealthCheckSuccess", reflect.TypeOf((*MockIClient)(nil).CountHealthCheckSuccess))
+}
+
 // Dial mocks base method.
 func (m *MockIClient) Dial() error {
 	m.ctrl.T.Helper()
