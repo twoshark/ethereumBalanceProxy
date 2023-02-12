@@ -1,8 +1,9 @@
 package ethereum
 
 import (
-	"github.com/twoshark/balanceproxy/src/common"
 	"testing"
+
+	"github.com/twoshark/balanceproxy/src/common"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"

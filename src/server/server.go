@@ -3,13 +3,14 @@ package server
 import (
 	"context"
 	"errors"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/twoshark/balanceproxy/src/common"
-	"github.com/twoshark/balanceproxy/src/metrics"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/twoshark/balanceproxy/src/common"
+	"github.com/twoshark/balanceproxy/src/metrics"
 
 	echoProm "github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"

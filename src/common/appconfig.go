@@ -1,8 +1,9 @@
 package common
 
 import (
-	"github.com/twoshark/balanceproxy/src/metrics"
 	"strings"
+
+	"github.com/twoshark/balanceproxy/src/metrics"
 )
 
 // AppConfiguration is a convenience wrapper for values from flags and env vars.

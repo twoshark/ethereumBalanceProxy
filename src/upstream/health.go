@@ -1,8 +1,9 @@
 package upstream
 
 import (
-	"github.com/twoshark/balanceproxy/src/metrics"
 	"time"
+
+	"github.com/twoshark/balanceproxy/src/metrics"
 
 	"github.com/spf13/viper"
 )

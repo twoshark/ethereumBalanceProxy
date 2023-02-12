@@ -2,8 +2,9 @@ package upstream
 
 import (
 	"errors"
-	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
 	"testing"
+
+	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
 
 	"github.com/golang/mock/gomock"
 	_ "github.com/golang/mock/mockgen/model"

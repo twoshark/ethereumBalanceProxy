@@ -2,10 +2,11 @@ package ethereum
 
 import (
 	"context"
-	"github.com/ethereum/go-ethereum"
-	"github.com/twoshark/balanceproxy/src/metrics"
 	"math/big"
 	"time"
+
+	"github.com/ethereum/go-ethereum"
+	"github.com/twoshark/balanceproxy/src/metrics"
 
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -34,7 +35,5 @@ func measureLatency(t time.Time, metric string) {
 		metrics.Metrics().EthGetBlockNumberLatency.With(nil).Observe(float64(duration.Milliseconds()))
 	case "latency_eth_syncing":
 		metrics.Metrics().EthSyncingLatency.With(nil).Observe(float64(duration.Milliseconds()))
-
 	}
-
 }

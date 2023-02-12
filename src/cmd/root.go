@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/twoshark/balanceproxy/src/common"
 	"os"
+
+	"github.com/twoshark/balanceproxy/src/common"
 
 	"github.com/spf13/cobra"
 )

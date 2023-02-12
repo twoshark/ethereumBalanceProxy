@@ -1,12 +1,13 @@
 package server
 
 import (
-	"github.com/twoshark/balanceproxy/src/common"
-	"github.com/twoshark/balanceproxy/src/upstream"
 	"math/big"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/twoshark/balanceproxy/src/common"
+	"github.com/twoshark/balanceproxy/src/upstream"
 
 	log "github.com/sirupsen/logrus"
 

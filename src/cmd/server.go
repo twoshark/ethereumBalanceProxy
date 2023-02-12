@@ -8,8 +8,10 @@ import (
 	"github.com/twoshark/balanceproxy/src/server"
 )
 
-var endpointsFlag *string
-var dummyRPRCURL = "http://ethereumrpc1.com, https://localhost:8545"
+var (
+	endpointsFlag *string
+	dummyRPRCURL  = "http://ethereumrpc1.com, https://localhost:8545"
+)
 
 // serverCmd represents the server command.
 var serverCmd = &cobra.Command{

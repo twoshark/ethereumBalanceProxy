@@ -2,9 +2,10 @@ package upstream
 
 import (
 	"errors"
+	"sync"
+
 	"github.com/twoshark/balanceproxy/src/metrics"
 	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
-	"sync"
 
 	log "github.com/sirupsen/logrus"
 )

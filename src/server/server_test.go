@@ -2,11 +2,12 @@ package server
 
 import (
 	"context"
-	"github.com/twoshark/balanceproxy/src/common"
 	"net/http"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/twoshark/balanceproxy/src/common"
 
 	"github.com/ethereum/go-ethereum/ethclient"
 	log "github.com/sirupsen/logrus"
