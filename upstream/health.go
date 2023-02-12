@@ -13,6 +13,7 @@ var quitHealthCheck chan bool
 func (m *Manager) StartHealthCheck() chan bool {
 	failureCount := 0
 	failureLimit := viper.GetInt("HEALTH_FAILURE_THRESHOLD")
+	failureForgive := viper.GetInt("HEALTH_FAILURE_FORGIVENESS_THRESHOLD")
 	period := viper.GetInt("HEALTH_CHECK_PERIOD")
 	successStreak := 0
 	successThreshold := viper.GetInt("HEALTH_SUCCESS_THRESHOLD")
@@ -47,6 +48,9 @@ func (m *Manager) StartHealthCheck() chan bool {
 						log.WithFields(log.Fields{
 							"upstream": m.endpoints[i],
 						}).Error("upstream ")
+					}
+					if successStreak > failureForgive {
+						failureCount = 0
 					}
 				}
 			}
