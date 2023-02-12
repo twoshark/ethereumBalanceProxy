@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	echoProm "github.com/labstack/echo-contrib/prometheus"
 	"net/http"
 	"os"
 	"os/signal"
@@ -26,6 +27,9 @@ func Start(config common.AppConfiguration, ready chan bool) {
 
 	// Echo instance
 	e := echo.New()
+
+	p := echoProm.NewPrometheus("echo", nil)
+	p.Use(e)
 
 	// Middleware
 	e.Use(middleware.Logger())
