@@ -4,8 +4,10 @@ import (
 	"errors"
 	"sync"
 
+	"github.com/twoshark/balanceproxy/src/metrics"
+	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
+
 	log "github.com/sirupsen/logrus"
-	"github.com/twoshark/balanceproxy/upstream/ethereum"
 )
 
 var (
@@ -56,6 +58,7 @@ func (m *Manager) ConnectAll() error {
 			break
 		}
 	}
+	metrics.Metrics().HealthyUpstreams.Set(float64(m.HealthyCount()))
 
 	if !anyAvailable {
 		return errNoUpstreamAvailable

@@ -3,6 +3,8 @@ package upstream
 import (
 	"time"
 
+	"github.com/twoshark/balanceproxy/src/metrics"
+
 	"github.com/spf13/viper"
 )
 
@@ -23,8 +25,19 @@ func (m *Manager) StartHealthCheck() chan bool {
 				for i := range m.Clients {
 					m.Clients[i].EvaluatedHealthCheck()
 				}
+				metrics.Metrics().HealthyUpstreams.Set(float64(m.HealthyCount()))
 			}
 		}
 	}()
 	return quitHealthCheck
+}
+
+func (m *Manager) HealthyCount() int {
+	count := 0
+	for _, client := range m.Clients {
+		if client.Healthy() {
+			count++
+		}
+	}
+	return count
 }

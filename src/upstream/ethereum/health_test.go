@@ -5,9 +5,10 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/twoshark/balanceproxy/src/common"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"github.com/twoshark/balanceproxy/common"
 )
 
 type ClientHealthTestSuite struct {

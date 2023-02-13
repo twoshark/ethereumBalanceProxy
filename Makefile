@@ -18,7 +18,7 @@ mock:
 	./scripts/mock.sh
 
 start_server: build
-	./${BINARY_NAME} server --upstreams="https://eth.getblock.io/b33bc13b-2d6b-4112-bd43-d93bb7cf842a/mainnet/,https://mainnet.infura.io/v3/e2edc69a0cef4ff28466331d6d972560,https://fittest-falling-smoke.discover.quiknode.pro/"
+	./${BINARY_NAME} server --upstreams="https://google.com,https://eth.getblock.io/b33bc13b-2d6b-4112-bd43-d93bb7cf842a/mainnet/,https://mainnet.infura.io/v3/e2edc69a0cef4ff28466331d6d972560,https://fittest-falling-smoke.discover.quiknode.pro/"
 
 test:
 	./scripts/test.sh

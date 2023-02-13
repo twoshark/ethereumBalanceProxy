@@ -5,7 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	mock_ethereum "github.com/twoshark/balanceproxy/mocks"
-	"github.com/twoshark/balanceproxy/upstream/ethereum"
+	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
 )
 
 type connectParams struct {

@@ -6,18 +6,19 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"sync"
 	"time"
 
-	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/twoshark/balanceproxy/src/common"
+	"github.com/twoshark/balanceproxy/src/metrics"
+
+	echoProm "github.com/labstack/echo-contrib/prometheus"
+	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
-	"github.com/twoshark/balanceproxy/common"
 )
 
 func Start(config common.AppConfiguration, ready chan bool) {
-	var wg sync.WaitGroup
-	wg.Add(1)
+	startTime := time.Now()
 
 	bp := NewBalanceProxy(config)
 	bp.InitClients()
@@ -35,9 +36,15 @@ func Start(config common.AppConfiguration, ready chan bool) {
 	e.GET("/", bp.RootHandler)
 	e.GET("/ethereum/balance/:account", bp.GetLatestBalance)
 	e.GET("/ethereum/balance/:account/block/:block", bp.GetBalance)
+	e.GET("/live", bp.LiveHandler)
+	e.GET("/ready", bp.ReadyHandler)
+
+	p := echoProm.NewPrometheus("echo", nil)
+	p.Use(e)
 
 	go func() { ready <- true }()
-
+	startupTime := time.Since(startTime)
+	metrics.Metrics().StartUpTime.With(nil).Observe(float64(startupTime.Milliseconds()))
 	// Start server
 	if err := e.Start(":" + config.ListenPort); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		e.Logger.Fatal("shutting down the server")

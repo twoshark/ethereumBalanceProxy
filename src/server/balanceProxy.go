@@ -6,12 +6,13 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/twoshark/balanceproxy/src/common"
+	"github.com/twoshark/balanceproxy/src/upstream"
+
 	log "github.com/sirupsen/logrus"
 
 	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/labstack/echo/v4"
-	"github.com/twoshark/balanceproxy/common"
-	"github.com/twoshark/balanceproxy/upstream"
 )
 
 // BalanceProxy contains the handlers for the server.
@@ -42,6 +43,22 @@ func (bp *BalanceProxy) InitClients() {
 
 func (bp *BalanceProxy) RootHandler(c echo.Context) error {
 	return c.String(http.StatusOK, "server root")
+}
+
+// LiveHandler responds to a k8s liveness probe request
+// it will always return an unconditional 200 as long as the server is running
+func (bp *BalanceProxy) LiveHandler(c echo.Context) error {
+	return c.String(http.StatusOK, "live")
+}
+
+// ReadyHandler responds to a k8s readiness probe request
+// if there are any healthy upstreams, it will return a 200
+// otherwise it will return a 503 and disable the ingress
+func (bp *BalanceProxy) ReadyHandler(c echo.Context) error {
+	if bp.UpstreamManager.HealthyCount() > 0 {
+		return c.String(http.StatusOK, "ready")
+	}
+	return c.String(http.StatusServiceUnavailable, "no healthy upstreams")
 }
 
 func (bp *BalanceProxy) GetLatestBalance(c echo.Context) error {
