@@ -1,4 +1,4 @@
-BINARY_NAME=eth_balance_proxy
+BINARY_NAME=ethBalanceProxy
 build: clean dep
 	BINARY_NAME=${BINARY_NAME} ./scripts/build.sh
 
