@@ -142,5 +142,5 @@ func (suite *ServerTestSuite) TestMetricHandler() {
 	assert.True(suite.T(), strings.Contains(response, "go_"))
 
 	// Echo Metrics
-	assert.True(suite.T(), strings.Contains(response, "echo"))
+	assert.True(suite.T(), strings.Contains(response, "echo_"))
 }

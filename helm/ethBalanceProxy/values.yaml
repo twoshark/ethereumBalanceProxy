@@ -1,0 +1,33 @@
+proxy:
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+  host: "www.balanceproxy.com"
+  image:
+    repository: twoshark/balanceproxy
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  ingress:
+    enabled: false
+    hosts:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+  port: 8080
+  resources:
+    limits:
+      cpu: 1
+      memory: 4Gi
+    requests:
+      cpu: 1
+      memory: 4Gi
+  service:
+    type: ClusterIP
+  upstream:
+    health:
+      period: 60
+      failureLimit: 2
+      failureForgive: 10
+      successThreshold: 4
