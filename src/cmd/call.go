@@ -7,11 +7,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math/big"
+	"strconv"
+
 	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/spf13/cobra"
 	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
-	"math/big"
-	"strconv"
 )
 
 var account, block, method *string
@@ -31,6 +32,7 @@ func init() {
 	block = callCmd.PersistentFlags().String("block", "latest", "Ethereum Block Number or `latest`")
 	method = callCmd.PersistentFlags().String("method", "", "Ethereum JSON RPC Method")
 }
+
 func CallCommand(*cobra.Command, []string) error {
 	client := ethereum.NewClient(*endpoint)
 	err := client.Dial()
@@ -67,7 +69,7 @@ func CallCommand(*cobra.Command, []string) error {
 			return err
 		}
 		if balance != nil {
-			fmt.Printf(balance.String())
+			fmt.Print(balance.String())
 		} else {
 			fmt.Print("Nil Balance Response")
 		}
@@ -79,7 +81,6 @@ func CallCommand(*cobra.Command, []string) error {
 		fmt.Print(block)
 	default:
 		return errors.New("provided method unsupported")
-
 	}
 	return nil
 }

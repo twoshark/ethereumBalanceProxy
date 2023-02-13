@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
 
 	"github.com/spf13/cobra"
