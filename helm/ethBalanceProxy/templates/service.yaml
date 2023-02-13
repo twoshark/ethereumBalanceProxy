@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "ethBalanceProxy.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.proxy.service.type }}
   ports:
     - port: {{ .Values.proxy.port }}
       targetPort: http
