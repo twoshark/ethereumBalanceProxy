@@ -8,12 +8,13 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
+	ethCommon "github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 type IClient interface {
-	BalanceAt(ctx context.Context, account common.Address, blockNumber *big.Int) (*big.Int, error)
+	CheckIfArchive()
+	BalanceAt(ctx context.Context, account ethCommon.Address, blockNumber *big.Int) (*big.Int, error)
 	BlockNumber(ctx context.Context) (uint64, error)
 	EvaluatedHealthCheck()
 	Dial() error
@@ -25,13 +26,15 @@ type IClient interface {
 }
 
 type Client struct {
+	archive       bool
+	archiveLock   sync.Mutex
+	clientLock    sync.Mutex
 	endpoint      string
 	ethClient     *ethclient.Client
-	healthy       bool // healthy means the ethClient is connected and available to call
-	successStreak int
 	failureCount  int
+	healthy       bool // healthy means the ethClient is connected and available to call
 	healthyLock   sync.Mutex
-	clientLock    sync.Mutex
+	successStreak int
 }
 
 func NewClient(endpoint string) *Client {
@@ -54,6 +57,21 @@ func (c *Client) Dial() error {
 
 	c.ethClient = ethClient
 	return nil
+}
+
+// CheckIfArchive tries to pull the balance of a known wallet at block 15,000,000.
+// Only archive instances will be able to return a block that old.
+func (c *Client) CheckIfArchive() {
+	address := ethCommon.HexToAddress("0x74630370197b4c4795bFEeF6645ee14F8cf8997D")
+	_, err := c.BalanceAt(context.Background(), address, big.NewInt(15000000))
+	c.archiveLock.Lock()
+	defer c.archiveLock.Unlock()
+	if err != nil {
+		log.Error(err)
+		c.archive = false
+		return
+	}
+	c.archive = true
 }
 
 func (c *Client) Healthy() bool {

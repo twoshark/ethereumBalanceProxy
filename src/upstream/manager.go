@@ -81,6 +81,8 @@ func (m *Manager) Connect(index int) bool {
 		return false
 	}
 	m.Clients[index].SetHealth(true)
+	// Don't wait on archive check
+	go m.Clients[index].CheckIfArchive()
 
 	return true
 }
