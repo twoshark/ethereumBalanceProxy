@@ -18,8 +18,10 @@ var (
 
 // Manager maintains health status for Clients and provides Clients to calling code.
 type Manager struct {
-	Clients   []ethereum.IClient
-	endpoints []string
+	blockLock        sync.Mutex
+	Clients          []ethereum.IClient
+	endpoints        []string
+	maxBlockObserved uint64
 }
 
 func NewManager(endpoints []string) *Manager {

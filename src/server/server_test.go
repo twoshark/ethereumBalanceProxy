@@ -137,6 +137,7 @@ func (suite *ServerTestSuite) TestMetricHandler() {
 	assert.True(suite.T(), strings.Contains(response, "latency_eth_syncing"))
 	assert.True(suite.T(), strings.Contains(response, "latency_eth_get_block_number"))
 	assert.True(suite.T(), strings.Contains(response, "latency_eth_get_balance"))
+	assert.True(suite.T(), strings.Contains(response, "max_ethereum_block"))
 
 	// Go Metrics
 	assert.True(suite.T(), strings.Contains(response, "go_"))

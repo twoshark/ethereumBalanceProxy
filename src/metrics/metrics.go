@@ -11,6 +11,7 @@ type MetricSet struct {
 	StartUpTime              *prometheus.HistogramVec
 	ConfiguredUpstreams      prometheus.Gauge
 	HealthyUpstreams         prometheus.Gauge
+	MaxBlock                 prometheus.Gauge
 	EthSyncingLatency        *prometheus.HistogramVec
 	EthGetBlockNumberLatency *prometheus.HistogramVec
 	EthGetBalanceLatency     *prometheus.HistogramVec
@@ -36,6 +37,12 @@ func Metrics() *MetricSet {
 				prometheus.GaugeOpts{
 					Name: "upstreams_healthy",
 					Help: "currently healthy upstream endpoints",
+				},
+			),
+			MaxBlock: promauto.NewGauge(
+				prometheus.GaugeOpts{
+					Name: "max_ethereum_block",
+					Help: "Maximum Observed Block Number",
 				},
 			),
 			EthSyncingLatency: promauto.NewHistogramVec(

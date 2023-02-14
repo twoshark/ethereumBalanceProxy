@@ -17,9 +17,10 @@ type IClient interface {
 	CheckIfArchive()
 	BalanceAt(ctx context.Context, account ethCommon.Address, blockNumber *big.Int) (*big.Int, error)
 	BlockNumber(ctx context.Context) (uint64, error)
-	EvaluatedHealthCheck()
 	Dial() error
+	EvaluatedHealthCheck()
 	EthClient() *ethclient.Client
+	GetMaxBlock() uint64
 	Healthy() bool
 	HealthCheck() error
 	SetHealth(bool)
@@ -29,12 +30,14 @@ type IClient interface {
 type Client struct {
 	archive       bool
 	archiveLock   sync.Mutex
+	blockLock     sync.Mutex
 	clientLock    sync.Mutex
 	endpoint      string
 	ethClient     *ethclient.Client
 	failureCount  int
 	healthy       bool // healthy means the ethClient is connected and available to call
 	healthyLock   sync.Mutex
+	maxBlock      uint64
 	successStreak int
 }
 
@@ -96,4 +99,18 @@ func (c *Client) EthClient() *ethclient.Client {
 	c.clientLock.Lock()
 	defer c.clientLock.Unlock()
 	return c.ethClient
+}
+
+func (c *Client) ProposeNewMaxBlock(newBlock uint64) {
+	c.blockLock.Lock()
+	defer c.blockLock.Unlock()
+	if newBlock > c.maxBlock {
+		c.maxBlock = newBlock
+	}
+}
+
+func (c *Client) GetMaxBlock() uint64 {
+	c.blockLock.Lock()
+	defer c.blockLock.Unlock()
+	return c.maxBlock
 }

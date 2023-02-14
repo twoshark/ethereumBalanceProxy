@@ -7,7 +7,6 @@ import (
 )
 
 type ArchiveTestCaseClient struct {
-	client      *mock_ethereum.MockIClient
 	endpoint    string
 	healthCheck error
 	healthy     bool

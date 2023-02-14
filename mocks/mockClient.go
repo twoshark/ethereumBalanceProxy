@@ -120,6 +120,20 @@ func (mr *MockIClientMockRecorder) EvaluatedHealthCheck() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EvaluatedHealthCheck", reflect.TypeOf((*MockIClient)(nil).EvaluatedHealthCheck))
 }
 
+// GetMaxBlock mocks base method.
+func (m *MockIClient) GetMaxBlock() uint64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMaxBlock")
+	ret0, _ := ret[0].(uint64)
+	return ret0
+}
+
+// GetMaxBlock indicates an expected call of GetMaxBlock.
+func (mr *MockIClientMockRecorder) GetMaxBlock() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMaxBlock", reflect.TypeOf((*MockIClient)(nil).GetMaxBlock))
+}
+
 // HealthCheck mocks base method.
 func (m *MockIClient) HealthCheck() error {
 	m.ctrl.T.Helper()
