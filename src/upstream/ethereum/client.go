@@ -13,6 +13,7 @@ import (
 )
 
 type IClient interface {
+	IsArchive() bool
 	CheckIfArchive()
 	BalanceAt(ctx context.Context, account ethCommon.Address, blockNumber *big.Int) (*big.Int, error)
 	BlockNumber(ctx context.Context) (uint64, error)
@@ -57,6 +58,11 @@ func (c *Client) Dial() error {
 
 	c.ethClient = ethClient
 	return nil
+}
+
+// IsArchive returns the current archive state of this endpoint
+func (c *Client) IsArchive() bool {
+	return c.archive
 }
 
 // CheckIfArchive tries to pull the balance of a known wallet at block 15,000,000.

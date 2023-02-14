@@ -60,6 +60,7 @@ func (suite *ManagerTestSuite) verifyConnectTestCase(testCase connectTestCase) {
 	mgr := NewManager(endpoints)
 
 	mockClient := mock_ethereum.NewMockIClient(suite.mockController)
+	mockClient.EXPECT().CheckIfArchive().AnyTimes()
 	mockClient.EXPECT().Dial().Return(testCase.Dial.Err).AnyTimes()
 	mockClient.EXPECT().HealthCheck().Return(testCase.HealthCheck.Err).AnyTimes()
 	mockClient.EXPECT().SetHealth(gomock.Any()).AnyTimes()
@@ -168,6 +169,7 @@ func (suite *ManagerTestSuite) verifyConnectAllTestCase(testCase connectAllTestC
 	mgr.Clients = make([]ethereum.IClient, len(testCase.clientExpects))
 	for i := 0; i < len(testCase.clientExpects); i++ {
 		client := mock_ethereum.NewMockIClient(suite.mockController)
+		client.EXPECT().CheckIfArchive().AnyTimes()
 		client.EXPECT().Dial().Return(testCase.clientExpects[i].Dial.Err).AnyTimes()
 		client.EXPECT().HealthCheck().Return(testCase.clientExpects[i].HealthCheck.Err).AnyTimes()
 		// infer `Healthy()` from HeathCheck and Dial errors
