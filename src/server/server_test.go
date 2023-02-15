@@ -124,7 +124,12 @@ func (suite *ServerTestSuite) TestMetricHandler() {
 	if err != nil {
 		return
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err = Body.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}(resp.Body)
 	responseData, err := io.ReadAll(resp.Body)
 	assert.NoError(suite.T(), err)
 	assert.Greater(suite.T(), len(responseData), 0)

@@ -1,5 +1,6 @@
 package upstream
 
+//goland:noinspection GoSnakeCaseUsage
 import (
 	_ "github.com/golang/mock/mockgen/model"
 	"github.com/stretchr/testify/assert"

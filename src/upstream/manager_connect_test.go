@@ -1,5 +1,6 @@
 package upstream
 
+//goland:noinspection GoSnakeCaseUsage
 import (
 	"github.com/golang/mock/gomock"
 	log "github.com/sirupsen/logrus"
