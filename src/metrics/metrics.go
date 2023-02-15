@@ -48,21 +48,21 @@ func Metrics() *MetricSet {
 			EthSyncingLatency: promauto.NewHistogramVec(
 				prometheus.HistogramOpts{
 					Name:    "latency_eth_syncing",
-					Help:    "time from program start until the server is ready to handle requests",
+					Help:    "upstream latency for eth_syncing",
 					Buckets: prometheus.DefBuckets,
 				}, nil,
 			),
 			EthGetBlockNumberLatency: promauto.NewHistogramVec(
 				prometheus.HistogramOpts{
 					Name:    "latency_eth_get_block_number",
-					Help:    "time from program start until the server is ready to handle requests",
+					Help:    "upstream latency for eth_getBlockNumber",
 					Buckets: prometheus.DefBuckets,
 				}, nil,
 			),
 			EthGetBalanceLatency: promauto.NewHistogramVec(
 				prometheus.HistogramOpts{
 					Name:    "latency_eth_get_balance",
-					Help:    "time from program start until the server is ready to handle requests",
+					Help:    "upstream latency for eth_getBalance",
 					Buckets: prometheus.DefBuckets,
 				}, nil,
 			),
