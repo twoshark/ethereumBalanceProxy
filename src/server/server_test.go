@@ -124,7 +124,12 @@ func (suite *ServerTestSuite) TestMetricHandler() {
 	if err != nil {
 		return
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err = Body.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}(resp.Body)
 	responseData, err := io.ReadAll(resp.Body)
 	assert.NoError(suite.T(), err)
 	assert.Greater(suite.T(), len(responseData), 0)
@@ -137,6 +142,7 @@ func (suite *ServerTestSuite) TestMetricHandler() {
 	assert.True(suite.T(), strings.Contains(response, "latency_eth_syncing"))
 	assert.True(suite.T(), strings.Contains(response, "latency_eth_get_block_number"))
 	assert.True(suite.T(), strings.Contains(response, "latency_eth_get_balance"))
+	assert.True(suite.T(), strings.Contains(response, "max_ethereum_block"))
 
 	// Go Metrics
 	assert.True(suite.T(), strings.Contains(response, "go_"))

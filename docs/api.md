@@ -6,9 +6,9 @@
 
 ##### Parameters
 
-> | name      |  type     | kind                  | description                                                           |
-> |-----------|-----------------------|-------------------------|-----------------------------------------------------------------------|
-> | None      |  required | object (JSON or YAML) | N/A  |
+| name | type     | kind                  | description |
+|------|----------|-----------------------|-------------|
+| None | required | object (JSON or YAML) | N/A         |
 
 ##### Example cURL
 
@@ -22,9 +22,9 @@
 
 ##### Parameters
 
-> | name     |  type     | kind | description       |
-> |----------|------|-----------|------------------------|
-> | address |  required | Path | Ethereum Wallet Address |
+| name    | type     | kind | description             |
+|---------|----------|------|-------------------------|
+| address | required | Path | Ethereum Wallet Address |
 
 ##### Example cURL
 
@@ -38,10 +38,10 @@
 
 ##### Parameters
 
-> | name    |  type     | kind | description                 |
-> |---------|-------------|-----------------------------|-----------------------------|
-> | address |  required | Path | Ethereum Wallet Address     |
-> | block   |  required | Path | Ethereum Block Number or `latest` |
+| name    | type     | kind | description                       |
+|---------|----------|------|-----------------------------------|
+| address | required | Path | Ethereum Wallet Address           |
+| block   | required | Path | Ethereum Block Number or `latest` |
 
 ##### Example cURL
 

@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"testing"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/twoshark/balanceproxy/src/common"
 
 	"github.com/stretchr/testify/assert"
@@ -30,10 +32,10 @@ func (suite *ClientHealthTestSuite) TestClient_processHealthCheckCalls() {
 	failLimit := 3
 	forgiveLimit := 10
 	successThreshold := 6
-	os.Setenv("HEALTH_FAILURE_THRESHOLD", strconv.Itoa(failLimit))
-	os.Setenv("HEALTH_FAILURE_FORGIVENESS_THRESHOLD", strconv.Itoa(forgiveLimit))
-	os.Setenv("HEALTH_SUCCESS_THRESHOLD", strconv.Itoa(successThreshold))
-	os.Setenv("HEALTH_CHECK_PERIOD", "1")
+	setEnv("HEALTH_FAILURE_THRESHOLD", strconv.Itoa(failLimit))
+	setEnv("HEALTH_FAILURE_FORGIVENESS_THRESHOLD", strconv.Itoa(forgiveLimit))
+	setEnv("HEALTH_SUCCESS_THRESHOLD", strconv.Itoa(successThreshold))
+	setEnv("HEALTH_CHECK_PERIOD", "1")
 
 	client := NewClient("")
 	assert.Equal(suite.T(), 0, client.failureCount)
@@ -87,4 +89,10 @@ func (suite *ClientHealthTestSuite) TestClient_processHealthCheckCalls() {
 	assert.Equal(suite.T(), 0, client.failureCount)
 	assert.Equal(suite.T(), 0, client.successStreak)
 	assert.Equal(suite.T(), true, client.Healthy())
+}
+
+func setEnv(envVar string, val string) {
+	if err := os.Setenv(envVar, val); err != nil {
+		log.Panic(err)
+	}
 }

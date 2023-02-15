@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
+
 	"github.com/twoshark/balanceproxy/src/common"
 	"github.com/twoshark/balanceproxy/src/upstream"
 
@@ -95,11 +97,20 @@ func (bp *BalanceProxy) GetBalanceFromNode(c echo.Context, address ethcommon.Add
 		"block":   block,
 		"address": address,
 	})
-
-	client, err := bp.UpstreamManager.GetClient()
-	if err != nil {
-		logger.Error("Error getting upstream client:", err)
-		return nil, err
+	var client ethereum.IClient
+	var err error
+	if block != nil && block.Uint64()+128 < bp.UpstreamManager.GetMaxBlock() {
+		client, err = bp.UpstreamManager.GetArchiveClient()
+		if err != nil {
+			logger.Error("Error getting upstream archive client:", err)
+			return nil, err
+		}
+	} else {
+		client, err = bp.UpstreamManager.GetClient()
+		if err != nil {
+			logger.Error("Error getting upstream client:", err)
+			return nil, err
+		}
 	}
 
 	balance, err := client.BalanceAt(c.Request().Context(), address, block)

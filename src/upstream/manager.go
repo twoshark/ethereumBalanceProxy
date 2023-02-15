@@ -11,14 +11,17 @@ import (
 )
 
 var (
-	errNoUpstreamAvailable     = errors.New("unable to connect to any upstream endpoint")
-	errNoHealthyUpstreamClient = errors.New("no healthy upstream client available")
+	errNoUpstreamAvailable            = errors.New("unable to connect to any upstream endpoint")
+	errNoHealthyUpstreamClient        = errors.New("no healthy upstream client available")
+	errNoHealthyArchiveUpstreamClient = errors.New("no healthy archive upstream client available")
 )
 
 // Manager maintains health status for Clients and provides Clients to calling code.
 type Manager struct {
-	Clients   []ethereum.IClient
-	endpoints []string
+	blockLock        sync.Mutex
+	Clients          []ethereum.IClient
+	endpoints        []string
+	maxBlockObserved uint64
 }
 
 func NewManager(endpoints []string) *Manager {
@@ -81,6 +84,8 @@ func (m *Manager) Connect(index int) bool {
 		return false
 	}
 	m.Clients[index].SetHealth(true)
+	// Don't wait on archive check
+	go m.Clients[index].CheckIfArchive()
 
 	return true
 }
@@ -100,4 +105,24 @@ func (m *Manager) GetClient() (ethereum.IClient, error) {
 		return m.Clients[i], nil
 	}
 	return nil, errNoHealthyUpstreamClient
+}
+
+// GetArchiveClient provides the first available healthy ethereum archive client to satisfy a caller's request.
+func (m *Manager) GetArchiveClient() (ethereum.IClient, error) {
+	for i := 0; i < len(m.Clients); i++ {
+		if !m.Clients[i].Healthy() {
+			go func(i int) {
+				err := m.Clients[i].Dial()
+				if err != nil {
+					log.Error("Redial failed for: ", m.Clients[i])
+				}
+			}(i)
+			continue
+		}
+		if !m.Clients[i].IsArchive() {
+			continue
+		}
+		return m.Clients[i], nil
+	}
+	return nil, errNoHealthyArchiveUpstreamClient
 }

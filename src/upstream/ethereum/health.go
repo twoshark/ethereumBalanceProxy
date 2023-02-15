@@ -48,6 +48,7 @@ func (c *Client) isBlockHeightIncreasing() error {
 	if lastBlock == 0 {
 		return errBlockHeightZero
 	}
+	go c.ProposeNewMaxBlock(lastBlock)
 	// Verify that block height is climbing at a reasonable pace
 	increaseObservationWindow := 3
 	var block uint64
@@ -65,7 +66,7 @@ func (c *Client) isBlockHeightIncreasing() error {
 			return errUpstreamRewind
 		}
 		lastBlock = block
-
+		go c.ProposeNewMaxBlock(block)
 		count++
 		if count >= increaseObservationWindow {
 			return errBlockHeightIncreaseTooSlow

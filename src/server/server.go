@@ -24,7 +24,7 @@ func Start(config common.AppConfiguration, ready chan bool) {
 	bp.InitClients()
 
 	quitHealthChecker := bp.UpstreamManager.StartHealthCheck()
-
+	quitBlockWatcher := bp.UpstreamManager.StartBlockWatcher()
 	// Echo instance
 	e := echo.New()
 
@@ -55,6 +55,7 @@ func Start(config common.AppConfiguration, ready chan bool) {
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 	go func() { quitHealthChecker <- true }()
+	go func() { quitBlockWatcher <- true }()
 	timeout := viper.GetInt("SHUTDOWN_TIMEOUT")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
 	defer cancel()
