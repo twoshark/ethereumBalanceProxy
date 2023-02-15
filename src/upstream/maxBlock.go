@@ -29,20 +29,23 @@ func (m *Manager) StartBlockWatcher() chan bool {
 			case <-quit:
 				return
 			case <-t.C:
-				oldMax := m.GetMaxBlock()
-				newMax := oldMax
-				for _, client := range m.Clients {
-					clientMax := client.GetMaxBlock()
-					if clientMax > newMax {
-						newMax = clientMax
-					}
-				}
-				if newMax == oldMax {
-					continue
-				}
-				m.SetMaxBlock(newMax)
+				m.CheckClientMaxBlocks()
 			}
 		}
 	}()
 	return quit
+}
+
+func (m *Manager) CheckClientMaxBlocks() {
+	oldMax := m.GetMaxBlock()
+	newMax := oldMax
+	for _, client := range m.Clients {
+		clientMax := client.GetMaxBlock()
+		if clientMax > newMax {
+			newMax = clientMax
+		}
+	}
+	if newMax > oldMax {
+		m.SetMaxBlock(newMax)
+	}
 }
