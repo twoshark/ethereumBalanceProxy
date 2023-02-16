@@ -8,6 +8,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var verbose *bool
+
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "balanceProxy",
@@ -25,6 +27,7 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	verbose = rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Enable verbose output")
 }
 
 // initConfig reads in config file and ENV variables if set.
