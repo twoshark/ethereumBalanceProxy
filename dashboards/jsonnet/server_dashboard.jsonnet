@@ -114,11 +114,16 @@ grafana.dashboard.new(
   grafana.graphPanel.new(
     'Upstreams Metrics',
     datasource='$datasource',
-    span=2,
+    span=3,
   )
   .addTarget(
     grafana.prometheus.target(
       'upstreams_healthy',
+    )
+  )
+  .addTarget(
+    grafana.prometheus.target(
+      'upstreams_archive',
     )
   )
   .addTarget(

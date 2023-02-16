@@ -25,19 +25,33 @@ func (m *Manager) StartHealthCheck() chan bool {
 				for i := range m.Clients {
 					m.Clients[i].EvaluatedHealthCheck()
 				}
-				metrics.Metrics().HealthyUpstreams.Set(float64(m.HealthyCount()))
+				clientCounts := m.ClientCounts()
+				metrics.Metrics().HealthyUpstreams.Set(float64(clientCounts.Healthy))
+				metrics.Metrics().ArchiveUpstreams.Set(float64(clientCounts.Archive))
 			}
 		}
 	}()
 	return quitHealthCheck
 }
 
-func (m *Manager) HealthyCount() int {
-	count := 0
+type ClientCounts struct {
+	Archive int
+	Healthy int
+}
+
+func (m *Manager) ClientCounts() ClientCounts {
+	healthyCount := 0
+	archiveCount := 0
 	for _, client := range m.Clients {
 		if client.Healthy() {
-			count++
+			healthyCount++
+		}
+		if client.IsArchive() {
+			archiveCount++
 		}
 	}
-	return count
+	return ClientCounts{
+		Archive: archiveCount,
+		Healthy: healthyCount,
+	}
 }

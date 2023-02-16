@@ -139,6 +139,7 @@ func (suite *ServerTestSuite) TestMetricHandler() {
 	assert.True(suite.T(), strings.Contains(response, "startup_time_ms"))
 	assert.True(suite.T(), strings.Contains(response, "upstreams_configured"))
 	assert.True(suite.T(), strings.Contains(response, "upstreams_healthy"))
+	assert.True(suite.T(), strings.Contains(response, "upstreams_archive"))
 	assert.True(suite.T(), strings.Contains(response, "latency_eth_syncing"))
 	assert.True(suite.T(), strings.Contains(response, "latency_eth_get_block_number"))
 	assert.True(suite.T(), strings.Contains(response, "latency_eth_get_balance"))

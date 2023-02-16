@@ -61,7 +61,9 @@ func (m *Manager) ConnectAll() error {
 			break
 		}
 	}
-	metrics.Metrics().HealthyUpstreams.Set(float64(m.HealthyCount()))
+	clientCounts := m.ClientCounts()
+	metrics.Metrics().HealthyUpstreams.Set(float64(clientCounts.Healthy))
+	metrics.Metrics().ArchiveUpstreams.Set(float64(clientCounts.Archive))
 
 	if !anyAvailable {
 		return errNoUpstreamAvailable
