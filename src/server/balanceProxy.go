@@ -57,7 +57,8 @@ func (bp *BalanceProxy) LiveHandler(c echo.Context) error {
 // if there are any healthy upstreams, it will return a 200
 // otherwise it will return a 503 and disable the ingress
 func (bp *BalanceProxy) ReadyHandler(c echo.Context) error {
-	if bp.UpstreamManager.HealthyCount() > 0 {
+	healthyCount, _ := bp.UpstreamManager.ClientCounts()
+	if healthyCount > 0 {
 		return c.String(http.StatusOK, "ready")
 	}
 	return c.String(http.StatusServiceUnavailable, "no healthy upstreams")
