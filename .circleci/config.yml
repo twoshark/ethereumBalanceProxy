@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  docker: circleci/docker@2.1.0
+  docker: circleci/docker@2.2.0
 executors:
   docker-publisher:
     docker:
@@ -10,7 +10,7 @@ jobs:
     docker:
       - image: cimg/go:1.20
         auth:
-          username: mydockerhub-user
+          username: twosharks
           password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
@@ -28,7 +28,7 @@ jobs:
     docker:
       - image: cimg/go:1.20
         auth:
-          username: mydockerhub-user
+          username: twosharks
           password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
@@ -67,4 +67,7 @@ workflows:
       - lint
       - test
       - build
+      - docker/publish:
+          image: twosharks/balanceproxy
+          tag: ${CIRCLE_SHA1:0:7},$CIRCLE_BRANCH
 
