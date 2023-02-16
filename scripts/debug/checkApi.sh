@@ -9,3 +9,5 @@ curl "${URL}"/ethereum/balance/0x74630370197b4c4795bFEeF6645ee14F8cf8997D
 curl "${URL}"/ethereum/balance/0x74630370197b4c4795bFEeF6645ee14F8cf8997D/block/16363048
 
 curl "${URL}"/metrics
+curl "${URL}"/live
+curl "${URL}"/ready

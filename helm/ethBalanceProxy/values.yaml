@@ -4,11 +4,12 @@ proxy:
     minReplicas: 1
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
+  endpoints: "https://fittest-falling-smoke.discover.quiknode.pro/"
   host: "www.balanceproxy.com"
   image:
-    repository: twoshark/balanceproxy
-    pullPolicy: IfNotPresent
-    tag: "latest"
+    repository: twosharks/balanceproxy
+    pullPolicy: Always
+    tag: "aba0912"
   ingress:
     enabled: false
     hosts:

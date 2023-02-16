@@ -8,6 +8,17 @@ clean:
 dep:
 	go mod download
 
+kind\:init:
+	./scripts/kind-init.sh
+kind\:install:
+	./scripts/kind-install.sh
+kind\:test:
+	./scripts/kind-test.sh
+kind\:uninstall:
+	./scripts/kind-uninstall.sh
+kind\:teardown:
+	./scripts/kind-teardown.sh
+
 lint: fmt
 	./scripts/lint.sh
 

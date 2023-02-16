@@ -19,6 +19,8 @@ spec:
     spec:
       containers:
         - name: proxy
+          command: [ "ethBalanceProxy" ]
+          args: [ "server", "--upstreams", {{ .Values.proxy.endpoints | quote}} ]
           image: "{{ .Values.proxy.image.repository }}:{{ .Values.proxy.image.tag }}"
           imagePullPolicy: {{ .Values.proxy.image.pullPolicy }}
           ports:
@@ -28,10 +30,10 @@ spec:
           livenessProbe:
             httpGet:
               path: /live
-              port: http
+              port: proxy
           readinessProbe:
             httpGet:
               path: /ready
-              port: http
+              port: proxy
           resources:
             {{- toYaml .Values.proxy.resources | nindent 12 }}
