@@ -1,19 +1,20 @@
-FROM golang:1.20-alpine3.17 as go-builder
+FROM golang:1.20 as go-builder
 
-RUN apk add libpcap-dev build-base
+RUN apt-get update && apt-get install -y ca-certificates libcap-dev
 
 WORKDIR /app
 
 COPY . /app/
 
-RUN go build -o balanceProxy
+RUN make build
 
-RUN chmod +x balanceProxy
 
-FROM debian:bookworm-20230202-slim
+FROM ubuntu:20.04
 
-COPY --from=go-builder /app/balanceProxy /usr/local/bin/balanceProxy
+RUN apt-get update && apt-get install -y ca-certificates libcap-dev
 
-CMD ["balanceProxy", "server"]
+COPY --from=go-builder /app/ethBalanceProxy /usr/local/bin/ethBalanceProxy
 
-EXPOSE 8000
+RUN chmod +x /usr/local/bin/ethBalanceProxy
+
+EXPOSE 8080

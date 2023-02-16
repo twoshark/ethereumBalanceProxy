@@ -1,11 +1,9 @@
 # Operational Runbook
 
-# Testing, Developing & Debugging
-
 ## Grafana
 
 In the event of an issue or an alert, the grafana dashboard provides a snapshot of important metrics to help guide diagnosis
-and support healthy operations. 
+and support healthy operations.
 
 ## RPC Calls 
 ```
@@ -33,3 +31,23 @@ Directly calls `upstream.ethereum.Client{}.HealthCheck` against a single endpoin
 
 ## Unit Tests
 ```make test```
+
+## `kind` testing
+
+To support local testing in `kind`, a set of `kind:...` make targets are provided.
+
+### `make kind:init`
+
+Instantiates kind cluster and installs prometheus operator & crds
+
+### `make kind:install` / `make kind:uninstall`
+
+Installs/uninstalls the helm chart to/from a kind cluster created with `make kind:init`
+
+### `make kind:test`
+
+Forwards `kind` pod port 8080 to local 8080 and runs `scripts/debug/checkApi.sh` to exercise all the endpoints in the proxy
+
+### `make kind:teardown`
+
+Teardown `kind` cluster
