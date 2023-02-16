@@ -176,6 +176,7 @@ func (suite *ManagerTestSuite) verifyConnectAllTestCase(testCase connectAllTestC
 		// infer `Healthy()` from HeathCheck and Dial errors
 		healthy := testCase.clientExpects[i].HealthCheck.Err == nil && testCase.clientExpects[i].Dial.Err == nil
 		client.EXPECT().Healthy().Return(healthy).AnyTimes()
+		client.EXPECT().IsArchive().Return(false).AnyTimes()
 		client.EXPECT().SetHealth(healthy).AnyTimes()
 		mgr.Clients[i] = client
 	}
