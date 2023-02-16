@@ -9,7 +9,7 @@ proxy:
   image:
     repository: twosharks/balanceproxy
     pullPolicy: Always
-    tag: "k8s"
+    tag: "aba0912"
   ingress:
     enabled: false
     hosts:
