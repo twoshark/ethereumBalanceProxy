@@ -8,6 +8,9 @@ clean:
 dep:
 	go mod download
 
+install: build
+	./scripts/install.sh
+
 kind\:init:
 	./scripts/kind-init.sh
 kind\:install:

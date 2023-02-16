@@ -11,7 +11,6 @@ type MaxBlockTestCase struct {
 }
 
 func (suite *ManagerTestSuite) TestCheckClientMaxBlocks() {
-
 	mgr := NewManager([]string{"", "", ""})
 	// Clients { frozen block height, climbing normally, unstable}
 	cases := []MaxBlockTestCase{
