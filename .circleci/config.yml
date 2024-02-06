@@ -18,10 +18,7 @@ jobs:
           name: Install dependencies
           command: sudo apt update -y && sudo apt install -y libpcap-dev
       - run:
-          name: go mod vendor
-          command: go mod vendor
-      - run:
-          name: Build go project
+          name: Build
           command: make build
 
   test:
@@ -36,10 +33,7 @@ jobs:
           name: Install dependencies
           command: sudo apt update -y && sudo apt install -y libpcap-dev
       - run:
-          name: go mod vendor
-          command: go mod vendor
-      - run:
-          name: Build go project
+          name: Run Tests
           command: make test
 
   lint:
@@ -53,9 +47,6 @@ jobs:
       - run:
           name: gofumpt install
           command: go install mvdan.cc/gofumpt@latest
-      - run:
-          name: go mod vendor
-          command: go mod vendor
       - run:
           name: Lint
           command: make lint

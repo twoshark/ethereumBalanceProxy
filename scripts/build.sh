@@ -10,6 +10,5 @@ LDFLAGS=(
   "-X 'main.BuildTime=${BUILD_TIMESTAMP}'"
 )
 
-go mod vendor
 go build -ldflags="${LDFLAGS[*]}" -o "${BINARY_NAME}" main.go
 ./ethBalanceProxy version
