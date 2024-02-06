@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/twoshark/balanceproxy/src/cmd"
-	"github.com/twoshark/balanceproxy/src/version"
+	"github.com/twoshark/ethbalanceproxy/src/cmd"
+	"github.com/twoshark/ethbalanceproxy/src/version"
 )
 
 var (
