@@ -6,7 +6,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/twoshark/balanceproxy/src/version"
+	"github.com/twoshark/ethbalanceproxy/src/version"
 
 	"github.com/spf13/cobra"
 )

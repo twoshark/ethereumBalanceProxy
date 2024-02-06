@@ -9,11 +9,10 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/twoshark/balanceproxy/src/common"
-	"github.com/twoshark/balanceproxy/src/metrics"
+	"github.com/twoshark/ethbalanceproxy/src/common"
+	"github.com/twoshark/ethbalanceproxy/src/metrics"
 
 	echoProm "github.com/labstack/echo-contrib/prometheus"
-	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 )
 

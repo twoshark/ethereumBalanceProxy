@@ -4,8 +4,8 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/twoshark/balanceproxy/src/metrics"
-	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
+	"github.com/twoshark/ethbalanceproxy/src/metrics"
+	"github.com/twoshark/ethbalanceproxy/src/upstream/ethereum"
 
 	log "github.com/sirupsen/logrus"
 )

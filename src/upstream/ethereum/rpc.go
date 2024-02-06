@@ -5,8 +5,7 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/twoshark/balanceproxy/src/metrics"
+	"github.com/twoshark/ethbalanceproxy/src/metrics"
 
 	"github.com/ethereum/go-ethereum/common"
 )

@@ -14,7 +14,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"github.com/twoshark/balanceproxy/src/common"
+	"github.com/twoshark/ethbalanceproxy/src/common"
 )
 
 func RunSuiteWithServer(t *testing.T, testSuite suite.TestingSuite) {

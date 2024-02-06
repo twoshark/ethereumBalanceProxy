@@ -2,7 +2,7 @@ package upstream
 
 import (
 	"github.com/stretchr/testify/assert"
-	mock_ethereum "github.com/twoshark/balanceproxy/mocks"
+	mock_ethereum "github.com/twoshark/ethbalanceproxy/mocks"
 )
 
 type MaxBlockTestCase struct {

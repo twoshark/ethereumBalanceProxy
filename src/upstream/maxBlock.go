@@ -3,7 +3,7 @@ package upstream
 import (
 	"time"
 
-	"github.com/twoshark/balanceproxy/src/metrics"
+	"github.com/twoshark/ethbalanceproxy/src/metrics"
 )
 
 func (m *Manager) SetMaxBlock(block uint64) {

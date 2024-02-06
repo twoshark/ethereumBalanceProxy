@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	"github.com/twoshark/balanceproxy/src/common"
+	"github.com/twoshark/ethbalanceproxy/src/common"
 
 	"github.com/spf13/cobra"
 )

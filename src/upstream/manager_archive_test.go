@@ -4,7 +4,7 @@ package upstream
 import (
 	_ "github.com/golang/mock/mockgen/model"
 	"github.com/stretchr/testify/assert"
-	mock_ethereum "github.com/twoshark/balanceproxy/mocks"
+	mock_ethereum "github.com/twoshark/ethbalanceproxy/mocks"
 )
 
 type ArchiveTestCaseClient struct {

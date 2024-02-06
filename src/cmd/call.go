@@ -9,7 +9,7 @@ import (
 
 	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/spf13/cobra"
-	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
+	"github.com/twoshark/ethbalanceproxy/src/upstream/ethereum"
 )
 
 var account, block, method *string

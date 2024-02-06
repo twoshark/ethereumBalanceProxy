@@ -6,15 +6,14 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
+	"github.com/twoshark/ethbalanceproxy/src/upstream/ethereum"
 
-	"github.com/twoshark/balanceproxy/src/common"
-	"github.com/twoshark/balanceproxy/src/upstream"
+	"github.com/twoshark/ethbalanceproxy/src/common"
+	"github.com/twoshark/ethbalanceproxy/src/upstream"
 
 	log "github.com/sirupsen/logrus"
 
 	ethcommon "github.com/ethereum/go-ethereum/common"
-	"github.com/labstack/echo/v4"
 )
 
 // BalanceProxy contains the handlers for the server.

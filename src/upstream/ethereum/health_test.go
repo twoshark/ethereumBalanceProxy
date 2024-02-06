@@ -7,7 +7,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/twoshark/balanceproxy/src/common"
+	"github.com/twoshark/ethbalanceproxy/src/common"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"

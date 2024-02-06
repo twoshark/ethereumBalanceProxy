@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/twoshark/balanceproxy/src/upstream/ethereum"
+	"github.com/twoshark/ethbalanceproxy/src/upstream/ethereum"
 
 	"github.com/golang/mock/gomock"
 	_ "github.com/golang/mock/mockgen/model"
